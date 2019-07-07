@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration  
+  PUBLIC "-//mybatis.org//DTD Config 3.0//EN"  
+  "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+    <!-- 全局别名设置，在映射文件中只需写别名，而不必写出整个类路径 -->
+    <typeAliases>    
+         <typeAlias type="cn.bzerhia.weibo.entity.User" alias="User"/>
+        <typeAlias type="cn.bzerhia.weibo.entity.Blog" alias="Blog"/>
+        <typeAlias type="cn.bzerhia.weibo.entity.Comment" alias="Comment"/>
+        <typeAlias type="cn.bzerhia.weibo.entity.Type" alias="Type"/>
+        <typeAlias type="cn.bzerhia.weibo.entity.Picture" alias="Picture"/>
+    </typeAliases>
+    <environments default="development"> <!-- 环境 -->
+        <environment id="development">  <!-- 运行环境 ID -->
+            <transactionManager type="JDBC" />  <!-- 事务管理器 -->
+            <dataSource type="POOLED">  <!-- 数据源配置 -->
+                <property name="driver" value="com.mysql.jdbc.Driver" />  
+                <property name="url" value="jdbc:mysql://localhost:3306/blog?useUnicode=true&amp;characterEncoding=utf-8" />
+                <property name="username" value="root" />  
+                <property name="password" value="123456" />
+            </dataSource>  
+        </environment>
+    </environments>
+    <!-- 实体映射文件配置 -->
+    <mappers>  
+        <mapper resource="mapper/UserMapper.xml" />
+        <mapper resource="mapper/BlogMapper.xml" />
+        <mapper resource="mapper/CommentMapper.xml" />
+        <mapper resource="mapper/TypeMapper.xml" />
+        <mapper resource="mapper/PictureMapper.xml" />
+    </mappers>
+</configuration>

@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+<mapper namespace="cn.bzerhia.weibo.mapper.BlogMapper">
+	<resultMap id="weiboResultMap" type="Blog">
+		<id property="id" column="bid"/>
+		<result property="title" column="title"/>
+		<result property="titlePage" column="title_page"/>
+		<result property="text" column="text"/>
+		<result property="publishTime" column="publish_time"/>
+		<result property="blogType" column="blog_type"/>
+        <association property="user" column="user_id" javaType="User">
+            <id property="id" column="uid"/>
+			<result property="username" column="username"/>
+			<result property="password" column="password"/>
+			<result property="sex" column="sex"/>
+			<result property="phone" column="phone"/>
+			<result property="address" column="address"/>
+			<result property="username" column="username"/>
+			<result property="type" column="type"/>
+			<result property="registerTime" column="register_time"/>
+			<result property="salt" column="salt"/>
+			<result property="image" column="image"/>
+        </association>
+		<association property="type" column="type" javaType="Type">
+			<id property="id" column="tid"/>
+			<result property="classification" column="classification"/>
+		</association>
+		<association property="pictures" column="picture" javaType="Picture">
+			<id property="id" column="pid"/>
+			<result property="title" column="ptitle"/>
+			<result property="src" column="src"/>
+		</association>
+		<association property="comments" column="comment" javaType="Comment">
+			<id property="id" column="cid"/>
+			<result property="text" column="ctext"/>
+			<result property="replyTime" column="reply_time"/>
+			<result property="picture" column="picture"/>
+			<association property="user" column="user_id" javaType="User">
+				<id property="id" column="u2id"/>
+				<result property="username" column="u2name"/>
+				<result property="password" column="u2word"/>
+				<result property="sex" column="sex"/>
+				<result property="phone" column="phone"/>
+				<result property="address" column="address"/>
+				<result property="type" column="type"/>
+				<result property="registerTime" column="u2time"/>
+				<result property="salt" column="salt"/>
+				<result property="image" column="image"/>
+			</association>
+		</association>
+	</resultMap>
+
+	<resultMap id="blogResultMap" type="Blog">
+		<id property="id" column="id"/>
+	</resultMap>
+
+	<resultMap id="photoResultMap" type="Blog">
+		<id property="id" column="id"/>
+		<result property="title" column="title"/>
+		<association property="picture" column="picture" javaType="Picture">
+			<id property="id" column="pid"/>
+			<result property="src" column="src"/>
+			<result property="userId" column="user_id"/>
+			<result property="blogId" column="blog_id"/>
+		</association>
+	</resultMap>
+	<insert id="addBlog" parameterType="Blog" useGeneratedKeys="true" keyProperty="id">
+		INSERT INTO t_blog(id,title,title_page,text,user_id,publish_time,type_id,blog_type)
+		VALUES (#{id},#{title},#{titlePage},#{text},#{userId},#{publishTime},#{typeId},#{blogType})
+	</insert>
+	<select id="findAll" resultMap="weiboResultMap" >
+		select 	 b.id bid,b.title,b.title_page,b.text,b.publish_time,
+			   u.id uid,u.username,u.`password`,u.sex,u.register_time,
+			   t.id tid,t.classification,
+			   p.id pid,p.src,p.title ptitle,
+			   c.id cid,c.user_id,c.blog_id,c.text ctext,c.reply_time,c.picture,
+				 u2.id u2id,u2.username u2name,u2.`password` u2word,u2.sex u2sex,u2.register_time u2time
+		from t_blog b
+		LEFT JOIN t_user u on b.user_id=u.id
+		LEFT JOIN t_type t on b.type_id=t.id
+		LEFT JOIN t_picture p on p.blog_id=b.id
+		LEFT JOIN t_comment c on c.blog_id=b.id
+		LEFT JOIN t_user u2 on u2.id=c.user_id;
+	</select>
+
+	<select id="findByTitle" resultMap="blogResultMap">
+		select * FROM t_blog where title=#{title}
+	</select>
+
+	<select id="findByPhoto" resultMap="photoResultMap">
+		SELECT b.id,b.title,
+			 p.id pid,p.src
+		 FROM t_blog b
+		LEFT JOIN t_picture p on p.blog_id=b.id;
+	</select>
+</mapper>
