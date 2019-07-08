@@ -1,5 +1,6 @@
 package cn.bzerhia.weibo.entity;
 
+import com.baomidou.mybatisplus.annotations.TableName;
 import lombok.Data;
 
 import java.util.ArrayList;
@@ -10,12 +11,13 @@ import java.util.List;
  * 帖子表
  */
 @Data
+@TableName("t_blog")
 public class Blog {
     private Integer id;
     private String title;//标题
     private String titlePage;//封面
     private String text;//正文
-    private List<Comment> comments = new ArrayList<Comment>();//评论
+    private List<Comment> comment = new ArrayList<Comment>();//评论
     private User user;//用户
     private Date publishTime;//发表时间
     private Type type;//帖子类型

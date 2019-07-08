@@ -1,9 +1,12 @@
 package cn.bzerhia.weibo.controller;
 import cn.bzerhia.weibo.constant.Constant;
+import cn.bzerhia.weibo.entity.Blog;
 import cn.bzerhia.weibo.entity.Picture;
 import cn.bzerhia.weibo.entity.User;
+import cn.bzerhia.weibo.service.BlogService;
 import cn.bzerhia.weibo.service.PictureService;
 import cn.bzerhia.weibo.service.UserService;
+import cn.bzerhia.weibo.service.impl.BlogServiceImpl;
 import cn.bzerhia.weibo.service.impl.PictureServiceImpl;
 import cn.bzerhia.weibo.service.impl.UserServiceImpl;
 import cn.bzerhia.weibo.util.MD5Utils;
@@ -23,10 +26,12 @@ import java.util.List;
 public class UserController {
     private UserService userService;
     private PictureService pictureService;
+    private BlogService blogService;
 
     public UserController() {
         userService = new UserServiceImpl();
         pictureService = new PictureServiceImpl();
+        blogService = new BlogServiceImpl();
     }
     @GetMapping("index")
     public String index(){
@@ -45,21 +50,25 @@ public class UserController {
         return "register";
     }
     @GetMapping("user/myIndex")
-    public String myIndex(HttpSession session){
+    public String myIndex(HttpSession session,Model model){
         User user = (User)session.getAttribute("user");
         if(user==null){
             return "index";
         }else{
+            List<Blog> blogList = blogService.findByUserId(user.getId());
+            model.addAttribute("blogList",blogList);
             return "user/myIndex";
         }
     }
 
     @GetMapping("user/myInformation")
-    public String myInformation(HttpSession session){
+    public String myInformation(HttpSession session,Model model){
         User user = (User)session.getAttribute("user");
         if(user==null){
             return "index";
         }else{
+            List<Blog> blogList = blogService.findByUserId(user.getId());
+            model.addAttribute("blogList",blogList);
             return "user/myInformation";
         }
     }

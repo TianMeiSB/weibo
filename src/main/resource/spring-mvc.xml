@@ -19,7 +19,22 @@ http://www.springframework.org/schema/mvc/spring-mvc-4.0.xsd">
     
     <!-- 静态资源不拦截 -->
     <mvc:resources mapping="/static/**" location="/static/" />
-	
+	<mvc:interceptors>
+		<!--国际化-->
+		<bean class="org.springframework.web.servlet.i18n.LocaleChangeInterceptor">
+			<property name="paramName" value="lang"/>
+		</bean>
+		<mvc:interceptor>
+			<mvc:mapping path="/admin/**"/><!--拦截的url-->
+			<mvc:mapping path="/admin/"/><!--拦截的url-->
+			<mvc:mapping path="/admin"/><!--拦截的url-->
+			<mvc:mapping path="/user/**"/><!--拦截的url-->
+			<mvc:mapping path="/user/"/><!--拦截的url-->
+			<mvc:mapping path="/user"/><!--拦截的url-->
+			<bean class="cn.bzerhia.weibo.intercetor.LoginIntercetor" />
+		</mvc:interceptor>
+
+	</mvc:interceptors>
 	<!-- 视图解析器 -->
 	<bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
          <property name="viewClass" value="org.springframework.web.servlet.view.JstlView" />

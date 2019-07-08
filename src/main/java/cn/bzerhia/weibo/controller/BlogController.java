@@ -6,6 +6,7 @@ import cn.bzerhia.weibo.service.BlogService;
 import cn.bzerhia.weibo.service.impl.BlogServiceImpl;
 import cn.bzerhia.weibo.util.MathUtil;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
@@ -56,6 +57,21 @@ public class BlogController {
             session.removeAttribute("fengmian");
         }else{
             response.getWriter().write("error4");
+        }
+    }
+
+    @GetMapping("seeBlog")
+    public String seeBlog(Integer blogId, Model model){
+        if (blogId==null){
+            return "index";
+        }else{
+            Blog blog = blogService.findById(blogId);
+            if (blog==null){
+                return "index";
+            }else{
+                model.addAttribute("blog",blog);
+                return "seeBlog";
+            }
         }
     }
 

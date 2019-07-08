@@ -9,5 +9,7 @@ public interface BlogService {
     int addBlog(Blog blog);
     Blog findByTitle(String title);
     Blog findById(Integer id);
-    List<Blog> findByPhoto();
+    List<Blog> findAllByPhoto();
+    List<Blog> findByPhoto(Integer userId);
+    List<Blog> findByUserId(Integer userId);
 }

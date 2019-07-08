@@ -101,7 +101,7 @@
             <div style="width: 98%;height: 66px;margin: 3px;background-color: #F8F8F8;">
                 <div style="width: 33%;height: 100%;text-align: center;float: left;border-right: 1px solid #DDDDDD"><div STYLE="margin-top: 12%"><a href="#" style="text-decoration:none">1111</a><p>关注</p></div></div>
                 <div style="width: 34%;height: 100%;text-align: center;float: left;border-right: 1px solid #DDDDDD"><div STYLE="margin-top: 12%"><a href="#" style="text-decoration:none">1111</a><p>粉丝</p></div></div>
-                <div style="width: 33%;height: 100%;text-align: center;float: left;"><div STYLE="margin-top: 12%"><a href="#" style="text-decoration:none">1111</a><p>微博</p></div></div>
+                <div style="width: 33%;height: 100%;text-align: center;float: left;"><div STYLE="margin-top: 12%"><a href="#" style="text-decoration:none">${blogList.size()}</a><p>微博</p></div></div>
             </div>
 
             <div style="width: 98%;height: 230px;margin: 3px;background-color: #F8F8F8;margin-top: 10px">

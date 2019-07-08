@@ -82,7 +82,7 @@ public class Test {
    }
 
    public void t4(){
-       List<Blog> byPhoto = blogService.findByPhoto();
+       List<Blog> byPhoto = blogService.findByPhoto(1);
        for (Blog picture:byPhoto){
            System.out.println(picture);
            List<Picture> picture1 = picture.getPicture();

@@ -28,7 +28,7 @@ public class PictureController {
         if(user==null){
             return "index";
         }else{
-            List<Blog> blogList = blogService.findByPhoto();
+            List<Blog> blogList = blogService.findByPhoto(user.getId());
             model.addAttribute("blogList",blogList);
             return "user/updateAlbum";
         }

@@ -1,9 +1,11 @@
 package cn.bzerhia.weibo.entity;
 
+import com.baomidou.mybatisplus.annotations.TableName;
 import lombok.Data;
 
 import java.util.Date;
 @Data
+@TableName("t_user")
 public class User {
     private Integer id;
     private String username;

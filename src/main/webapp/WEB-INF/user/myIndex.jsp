@@ -101,7 +101,7 @@
             <div style="width: 98%;height: 66px;margin: 3px;background-color: #F8F8F8;">
                 <div style="width: 33%;height: 100%;text-align: center;float: left;border-right: 1px solid #DDDDDD"><div STYLE="margin-top: 12%"><a href="#" style="text-decoration:none">1111</a><p>关注</p></div></div>
                 <div style="width: 34%;height: 100%;text-align: center;float: left;border-right: 1px solid #DDDDDD"><div STYLE="margin-top: 12%"><a href="#" style="text-decoration:none">1111</a><p>粉丝</p></div></div>
-                <div style="width: 33%;height: 100%;text-align: center;float: left;"><div STYLE="margin-top: 12%"><a href="#" style="text-decoration:none">1111</a><p>微博</p></div></div>
+                <div style="width: 33%;height: 100%;text-align: center;float: left;"><div STYLE="margin-top: 12%"><a href="#" style="text-decoration:none">${blogList.size()}</a><p>微博</p></div></div>
             </div>
 
             <div style="width: 98%;height: 230px;margin: 3px;background-color: #F8F8F8;margin-top: 10px">
@@ -138,47 +138,51 @@
                     </form>
                 </div>
             </div>
+            <c:forEach items="${blogList}" var="blogList">
 
-            <div style="width: 99%;height: 200px;background-color: #FFFFFF;margin: 3px;margin-top: 10px;margin-bottom: 0;">
-                <div style="width: 10%;height: 50%;margin-left: 1%;margin-top: 2%;float: left;">
-                    <img src="/static/images/touxiang/1.jpg" alt="..." class="img-circle" style="width: 100%;border: 1px solid #9F9F9F">
-                </div>
-                <div style="width: 80%;height: 93%;float: left;margin-left: 1%;margin-top: 2%;">
-                    <div style="width: 100%;height: 35%;">
-                        <p>admin</p>
-                        <p>6月21日 15:33</p>
-                        <p>测试测试测试测试测试</p>
-                    </div>
-                    <div style="width: 450px;height: 100px;overflow :hidden">
-                        <div id="layer-photos-demo" class="layer-photos-demo">
-                            <img layer-pid="" layer-src="/static/images/1.jpg" src="/static/images/1.jpg"  style="width: 130px;height: 100px; margin-right: 15px;">
-                            <img layer-pid="" layer-src="/static/images/2.png" src="/static/images/2.png"  style="width: 130px;height: 100px; margin-right: 15px;">
-                            <img layer-pid="" layer-src="/static/images/3.jpg" src="/static/images/3.jpg"  style="width: 130px;height: 100px; margin-right: 15px;">
-                            <img layer-pid="" layer-src="/static/images/2.png" src="/static/images/2.png"  style="width: 130px;height: 100px; margin-right: 15px;">
-                            <img layer-pid="" layer-src="/static/images/2.png" src="/static/images/2.png"  style="width: 130px;height: 100px; margin-right: 15px;">
-                            <img layer-pid="" layer-src="/static/images/2.png" src="/static/images/2.png"  style="width: 130px;height: 100px; margin-right: 15px;">
-                            <img layer-pid="" layer-src="/static/images/2.png" src="/static/images/2.png"  style="width: 130px;height: 100px; margin-right: 15px;">
+                <div>
+                    <div style="width: 99%;height: 200px;background-color: #FFFFFF;margin: 3px;margin-top: 10px;margin-bottom: 0;">
+                        <div style="width: 10%;height: 50%;margin-left: 1%;margin-top: 2%;float: left;">
+                            <img src="${blogList.user.image}" alt="..." class="img-circle" style="width: 100%;border: 1px solid #9F9F9F">
                         </div>
-
+                        <div style="width: 80%;height: 93%;float: left;margin-left: 1%;margin-top: 2%;">
+                            <div style="width: 100%;height: 35%;">
+                                <p>${blogList.user.username}</p>
+                                <p><fmt:formatDate value="${blogList.publishTime}" pattern="yyyy-MM-dd hh:mm:ss"/></p>
+                                <div><div style="float: left"><c:if test="${blogList.blogType==0}"><a href="#">#微博#</a></c:if><c:if test="${blogList.blogType==1}"><a href="#">#博客#</a></c:if></div>&nbsp;<a  style="float: left" href="${ctx}/seeBlog?blogId=${blogList.id}">${blogList.title}</a></div>
+                            </div>
+                            <div style="width: 450px;height: 100px;overflow :hidden">
+                                <div  class="layer-photos-demo">
+                                    <c:set value="${blogList.picture}" var="picture"/>
+                                    <c:if test="${blogList.blogType==0}">
+                                        <c:forEach items="${picture}" var="picture2">
+                                            <img layer-pid="" layer-src="${picture2.src}" src="${picture2.src}"  style="width: 130px;height: 100px; margin-right: 15px;">
+                                        </c:forEach>
+                                    </c:if>
+                                    <c:if test="${blogList.blogType==1}">
+                                        <img layer-pid="" layer-src="${blogList.titlePage}" src="${blogList.titlePage}"  style="width: 130px;height: 100px; margin-right: 15px;">
+                                    </c:if>
+                                </div>
+                            </div>
+                        </div>
+                        <div style="width: 8%;height: 93%;margin-top: 2%;float: left;">
+                            <li class="dropdown">
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">操作<span class="caret"></span></a>
+                                <ul class="dropdown-menu">
+                                    <li><a href="#">修改</a></li>
+                                    <li><a href="#">删除</a></li>
+                                </ul>
+                            </li>
+                        </div>
                     </div>
-
+                    <div style="width: 99%;height: 45px;background-color: #FFFFFF;margin: 3px;margin-top: 0;">
+                        <div style="width: 25%;height: 100%;float: left;text-align: center;border: 1px solid #DDDDDD;border-right: none;"><div style="margin-top: 7%;"><a href="#" style="text-decoration:none">推广</a></div></div>
+                        <div style="width: 25%;height: 100%;float: left;text-align: center;border: 1px solid #DDDDDD;border-right: none;"><div style="margin-top: 7%;"><a href="#" style="text-decoration:none"><i class="layui-icon layui-icon-share"></i> 分享</a></div></div>
+                        <div style="width: 25%;height: 100%;float: left;text-align: center;border: 1px solid #DDDDDD;border-right: none;"><div style="margin-top: 7%;"><a href="${ctx}/seeBlog?blogId=${blogList.id}" style="text-decoration:none"><i class="layui-icon layui-icon-dialogue"></i>评论</a></div></div>
+                        <div style="width: 25%;height: 100%;float: left;text-align: center;border: 1px solid #DDDDDD"><div style="margin-top: 7%;"><a href="#" style="text-decoration:none"><i class="layui-icon layui-icon-praise"></i> 点赞</a></div></div>
+                    </div>
                 </div>
-                <div style="width: 8%;height: 93%;margin-top: 2%;float: left;">
-                    <li class="dropdown">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">操作<span class="caret"></span></a>
-                        <ul class="dropdown-menu">
-                            <li><a href="#">修改</a></li>
-                            <li><a href="#">删除</a></li>
-                        </ul>
-                    </li>
-                </div>
-            </div>
-            <div style="width: 99%;height: 45px;background-color: #FFFFFF;margin: 3px;margin-top: 0;">
-                <div style="width: 25%;height: 100%;float: left;text-align: center;border: 1px solid #DDDDDD;border-right: none;"><div style="margin-top: 7%;"><a href="#" style="text-decoration:none">推广</a></div></div>
-                <div style="width: 25%;height: 100%;float: left;text-align: center;border: 1px solid #DDDDDD;border-right: none;"><div style="margin-top: 7%;"><a href="#" style="text-decoration:none"><i class="layui-icon layui-icon-share"></i> 分享</a></div></div>
-                <div style="width: 25%;height: 100%;float: left;text-align: center;border: 1px solid #DDDDDD;border-right: none;"><div style="margin-top: 7%;"><a href="#" style="text-decoration:none"><i class="layui-icon layui-icon-dialogue"></i> 评论</a></div></div>
-                <div style="width: 25%;height: 100%;float: left;text-align: center;border: 1px solid #DDDDDD"><div style="margin-top: 7%;"><a href="#" style="text-decoration:none"><i class="layui-icon layui-icon-praise"></i> 点赞</a></div></div>
-            </div>
+            </c:forEach>
         </div>
     </div>
 
@@ -195,7 +199,7 @@
     });
     layui.use('layer',function () {
         layer.photos({
-            photos: '#layer-photos-demo'
+            photos: '.layer-photos-demo'
             , anim: 5 //0-6的选择，指定弹出图片动画类型，默认随机（请注意，3.0之前的版本用shift参数）
         });
     });

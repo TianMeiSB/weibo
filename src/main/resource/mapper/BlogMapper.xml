@@ -11,8 +11,8 @@
 		<result property="text" column="text"/>
 		<result property="publishTime" column="publish_time"/>
 		<result property="blogType" column="blog_type"/>
-        <association property="user" column="user_id" javaType="User">
-            <id property="id" column="uid"/>
+		<association property="user" column="user_id" javaType="User">
+			<id property="id" column="uid"/>
 			<result property="username" column="username"/>
 			<result property="password" column="password"/>
 			<result property="sex" column="sex"/>
@@ -23,7 +23,7 @@
 			<result property="registerTime" column="register_time"/>
 			<result property="salt" column="salt"/>
 			<result property="image" column="image"/>
-        </association>
+		</association>
 		<association property="type" column="type" javaType="Type">
 			<id property="id" column="tid"/>
 			<result property="classification" column="classification"/>
@@ -67,6 +67,62 @@
 			<result property="blogId" column="blog_id"/>
 		</association>
 	</resultMap>
+
+	<resultMap id="blogByIdResultMap" type="Blog">
+		<id property="id" column="bid"/>
+		<result property="title" column="title"/>
+		<result property="titlePage" column="title_page"/>
+		<result property="text" column="text"/>
+		<result property="publishTime" column="publish_time"/>
+		<result property="blogType" column="blog_type"/>
+		<association property="user" column="user_id" javaType="User">
+			<id property="id" column="uid"/>
+			<result property="username" column="username"/>
+			<result property="image" column="image"/>
+		</association>
+		<association property="picture" column="picture" javaType="Picture">
+			<id property="id" column="pid"/>
+			<result property="src" column="src"/>
+		</association>
+		<association property="comment" column="comment" javaType="Comment">
+			<id property="id" column="cid"/>
+			<result property="text" column="ctext"/>
+			<result property="replyTime" column="reply_time"/>
+			<result property="picture" column="picture"/>
+			<result property="userId" column="user_id"/>
+			<association property="user1" column="user1" javaType="User">
+				<id property="id" column="uuid"/>
+				<result property="username" column="uuname"/>
+				<result property="image" column="uuimage"/>
+			</association>
+		</association>
+	</resultMap>
+	<resultMap id="blogByIdResultMap2" type="Blog">
+		<id property="id" column="bid"/>
+		<result property="title" column="title"/>
+		<result property="titlePage" column="title_page"/>
+		<result property="text" column="text"/>
+		<result property="publishTime" column="publish_time"/>
+		<result property="blogType" column="blog_type"/>
+		<association property="user" column="user_id" javaType="User">
+			<id property="id" column="uid"/>
+			<result property="username" column="username"/>
+			<result property="image" column="image"/>
+		</association>
+		<association property="picture" column="picture" javaType="Picture">
+			<id property="id" column="pid"/>
+			<result property="src" column="src"/>
+		</association>
+		<association property="comment" column="comment" javaType="Comment">
+			<id property="id" column="cid"/>
+			<result property="text" column="ctext"/>
+			<result property="replyTime" column="reply_time"/>
+			<result property="picture" column="picture"/>
+			<result property="userId" column="user_id"/>
+		</association>
+	</resultMap>
+
+
 	<insert id="addBlog" parameterType="Blog" useGeneratedKeys="true" keyProperty="id">
 		INSERT INTO t_blog(id,title,title_page,text,user_id,publish_time,type_id,blog_type)
 		VALUES (#{id},#{title},#{titlePage},#{text},#{userId},#{publishTime},#{typeId},#{blogType})
@@ -94,6 +150,39 @@
 		SELECT b.id,b.title,
 			 p.id pid,p.src
 		 FROM t_blog b
+		LEFT JOIN t_picture p on p.blog_id=b.id
+		WHERE p.user_id=#{userId}
+	</select>
+
+	<select id="findAllByPhoto" resultMap="photoResultMap">
+		SELECT b.id,b.title,
+			 p.id pid,p.src
+		 FROM t_blog b
 		LEFT JOIN t_picture p on p.blog_id=b.id;
+	</select>
+	<select id="findByUserId" resultMap="blogByIdResultMap2">
+		select b.id bid,b.title,b.title_page,b.blog_type,b.publish_time,b.text,b.user_id,b.type_id,
+			 u.id uid,u.username,u.image,
+			 p.id pid,p.src,
+			 c.id cid,c.text ctext,c.user_id,c.reply_time,c.picture
+		from t_blog b
+		LEFT JOIN t_user u on b.user_id=u.id
+		LEFT JOIN t_picture p on p.blog_id=b.id
+		LEFT JOIN t_comment c on c.blog_id=b.id
+		WHERE b.user_id=#{userId}
+	</select>
+
+	<select id="findById" resultMap="blogByIdResultMap">
+		select b.id bid,b.title,b.title_page,b.blog_type,b.publish_time,b.text,b.user_id,b.type_id,
+			 u.id uid,u.username,u.image,
+			 p.id pid,p.src,
+			 c.id cid,c.text ctext,c.user_id,c.reply_time,c.picture,
+			 uu.id uuid,uu.username uuname,uu.image uuimage
+		from t_blog b
+		LEFT JOIN t_user u on b.user_id=u.id
+		LEFT JOIN t_picture p on p.blog_id=b.id
+		LEFT JOIN t_comment c on c.blog_id=b.id
+		LEFT JOIN t_user uu on c.user_id=uu.id
+		WHERE b.id=#{blogId}
 	</select>
 </mapper>

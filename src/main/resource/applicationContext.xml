@@ -38,15 +38,22 @@
 		<property name="maxActive" value="${maxActive}" /><!-- 最大连接数 -->
 		<property name="initialSize" value="${initialSize}"/><!-- 初始化连接数 -->
 	</bean>
-
+	<!-- mybatis plus的全局配置 -->
+	<bean id="globalConfiguration" class="com.baomidou.mybatisplus.entity.GlobalConfiguration">
+		<!-- 下划线转换为驼峰式 -->
+		<property name="dbColumnUnderline" value="true"/>
+	</bean>
     <!--配置MyBatis的sqlSessionFactory-->
-	<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+	<!--<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">-->
+	<bean id="sqlSessionFactory" class="com.baomidou.mybatisplus.spring.MybatisSqlSessionFactoryBean">
         <property name="dataSource" ref="dataSource"/><!--数据源-->
         <property name="mapperLocations" value="classpath:mapper/*.xml"/><!-- 配置Mapper.xml的目录 -->
         <property name="typeAliasesPackage" value="cn.bzerhia.weibo.entity"/><!-- 配置实体类包做为别名 -->
+		<property name="globalConfig" ref="globalConfiguration"/>
 		<!--<property name="configLocation" value="config/mybatis.xml"></property>-->
 		<!-- <property name="configLocation" value="classpath:mybatis-config.xml"/>--><!--引入mybatis的配置文件 -->
 		<property name="plugins">
+
 			<array>
 				<bean class="com.github.pagehelper.PageInterceptor">
 					<property name="properties">
@@ -61,7 +68,11 @@
 						</value>
 					</property>
 				</bean>
+				<bean class="com.baomidou.mybatisplus.plugins.PerformanceInterceptor">
+					<property name="format" value="true"/>
+				</bean>
 			</array>
+
 		</property>
 	</bean>
 

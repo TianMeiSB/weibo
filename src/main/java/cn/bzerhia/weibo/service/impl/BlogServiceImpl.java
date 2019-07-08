@@ -58,9 +58,25 @@ public class BlogServiceImpl implements BlogService {
     }
 
     @Override
-    public List<Blog> findByPhoto() {
+    public List<Blog> findAllByPhoto() {
         init();
-        List<Blog> list = blogMapper.findByPhoto();
+        List<Blog> list = blogMapper.findAllByPhoto();
+        close();
+        return list;
+    }
+
+    @Override
+    public List<Blog> findByPhoto(Integer userId) {
+        init();
+        List<Blog> list = blogMapper.findByPhoto(userId);
+        close();
+        return list;
+    }
+
+    @Override
+    public List<Blog> findByUserId(Integer userId) {
+        init();
+        List<Blog> list = blogMapper.findByUserId(userId);
         close();
         return list;
     }

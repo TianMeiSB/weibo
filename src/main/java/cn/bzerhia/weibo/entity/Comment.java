@@ -1,5 +1,6 @@
 package cn.bzerhia.weibo.entity;
 
+import com.baomidou.mybatisplus.annotations.TableName;
 import lombok.Data;
 
 import java.util.ArrayList;
@@ -10,9 +11,10 @@ import java.util.List;
  * 评论类
  */
 @Data
+@TableName("t_comment")
 public class Comment {
     private Integer id;
-    private User user;//评论的用户信息
+    private User user1;//评论的用户信息
     private Blog blog;//帖子信息
     private Integer userId;//用户ID
     private Integer blogId;//帖子ID

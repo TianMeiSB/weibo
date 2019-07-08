@@ -1,11 +1,12 @@
 package cn.bzerhia.weibo.mapper;
 
 import cn.bzerhia.weibo.entity.Type;
+import com.baomidou.mybatisplus.mapper.BaseMapper;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
 @Repository
-public interface TypeMapper {
+public interface TypeMapper extends BaseMapper<Type> {
     List<Type> findAll();
     int addType(Type type);
     int update(Type type);
