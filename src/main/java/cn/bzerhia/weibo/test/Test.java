@@ -41,21 +41,25 @@ public class Test {
         session.commit();
         session.close();
     }
-   /* public void t1(){
+    /*public void t1(){
         List<Blog> all = blogService.findAll();
         for (Blog b:all
              ) {
             System.out.println(b);
             System.out.println(b.getUser());
-//            List<Picture> pictures = b.getPictures();
+            List<Picture> pictures = b.getPicture();
             for (Picture p:pictures){
                 System.out.println(p);
             }
-            List<Comment> comments = b.getComments();
+            List<Comment> comments = b.getComment();
             for (Comment c:comments){
                 System.out.println(c);
-                User user = c.getUser();
+                User user = c.getUser1();
                 System.out.println(user);
+                List<Comment> comments1 = c.getComments();
+                for (Comment c2:comments1){
+                    System.out.println(c2);
+                }
             }
             System.out.println("======================");
         }
@@ -91,12 +95,26 @@ public class Test {
            }
        }
    }
+    public void t5(){
+        Blog byId = blogService.findById(40478005);
+        List<Comment> comment = byId.getComment();
+        for (Comment c:comment){
+            System.out.println(c);
+            System.out.println(c.getUser1());
+            List<Comment> comments = c.getComments();
+            for (Comment c2:comments){
+                System.out.println(c2);
+                System.out.println( c2.getUser1());
+            }
+
+        }
+    }
 
     public static void main(String[] args) {
         Test test = new Test();
 //        test.t1();
 //        test.t2();
 //        test.t3();
-        test.t4();
+        test.t5();
     }
 }

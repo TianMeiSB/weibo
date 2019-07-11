@@ -6,6 +6,7 @@ import java.util.List;
 
 public interface BlogService {
     List<Blog> findAll();
+    List<Blog> findAll2();
     int addBlog(Blog blog);
     Blog findByTitle(String title);
     Blog findById(Integer id);

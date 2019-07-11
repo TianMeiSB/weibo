@@ -8,4 +8,5 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface CommentMapper extends BaseMapper<Comment> {
     int addComment(Comment comment);
+    int addComment2(Comment comment);//楼中楼
 }

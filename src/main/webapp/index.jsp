@@ -11,9 +11,7 @@
 </head>
 
 <style>
-   #a1{
 
-    }
 </style>
 <body style="background-color: #EFEFEF;width: 98.5%;">
     <nav class="navbar navbar-default navbar-fixed-top"  style="background-color: #E7EAED;">
@@ -50,6 +48,9 @@
                     <button type="submit" class="btn btn-default">GO</button>
                 </form>
                 <ul class="nav navbar-nav navbar-right">
+                    <c:if test="${empty user}">
+                        <li><a href="/login">登陆</a></li>
+                    </c:if>
                     <li><a href="#">关于本站</a></li>
                     <c:if test="${not empty user}">
 
@@ -232,7 +233,7 @@
 <script src="${ctx}/static/layui/layui.js"></script>
 <script src="${ctx}/static/bootstrap-3.3.7-dist/js/bootstrap.min.js"></script>
 <script>
-
+    location.href='index';
     layui.use('carousel', function(){
         var carousel = layui.carousel;
         //建造实例
@@ -276,5 +277,6 @@
             }
         }
     })
+
 </script>
 </html>

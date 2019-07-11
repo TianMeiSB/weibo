@@ -50,4 +50,12 @@
     <select id="findById" resultMap="userResultMap">
         select * from t_user where id=#{userId}
     </select>
+
+	<select id="findAll" resultMap="userResultMap">
+		SELECT * FROM t_user WHERE type !=1
+	</select>
+
+	<update id="updateType" parameterType="User">
+		update t_user set type=#{type} where id=#{userId}
+	</update>
 </mapper>

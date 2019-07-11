@@ -23,7 +23,7 @@ public class TypeController {
     public String addBlog(HttpSession session, Model model){
         User user = (User)session.getAttribute("user");
         if(user==null){
-            return "index";
+            return "redirect:index";
         }else{
             List<Type> typeList = typeService.findAll();
             model.addAttribute("typeList",typeList);
@@ -35,7 +35,7 @@ public class TypeController {
     public String addweibo(HttpSession session, Model model){
         User user = (User)session.getAttribute("user");
         if(user==null){
-            return "index";
+            return "redirect:index";
         }else{
             List<Type> typeList = typeService.findAll();
             model.addAttribute("typeList",typeList);

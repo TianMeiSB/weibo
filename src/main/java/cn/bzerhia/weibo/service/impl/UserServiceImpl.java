@@ -7,6 +7,8 @@ import cn.bzerhia.weibo.util.MyBatisUtil;
 import org.apache.ibatis.session.SqlSession;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class UserServiceImpl implements UserService {
     private MyBatisUtil myBatisUtil;
@@ -65,5 +67,21 @@ public class UserServiceImpl implements UserService {
         init();
         User user = userMapper.findById(userId);
         return user;
+    }
+
+    @Override
+    public List<User> findAll() {
+        init();
+        List<User> all = userMapper.findAll();
+        close();
+        return all;
+    }
+
+    @Override
+    public int updateType(Integer type, Integer userId) {
+        init();
+        int row = userMapper.updateType(type, userId);
+        close();
+        return row;
     }
 }

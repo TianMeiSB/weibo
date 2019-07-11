@@ -80,39 +80,26 @@
             <p style="width:100px;height: 100px">
                 <a href="#" id="a">
                     <input type="file" name="image" class="hidden" value="" style="display:none;"/>
-                    <img src="${user.image}" alt="..." class="img-circle" style="width: 100%;height: 100%;border: 1px solid #9F9F9F">
+                    <img src="${user1.image}" alt="..." class="img-circle" style="width: 100%;height: 100%;border: 1px solid #9F9F9F">
                 </a>
             </p>
         </div>
-        <p style="font-size: 28px;">${user.username}</p>
-        <p>${user.introduce}</p>
+        <p style="font-size: 28px;">${user1.username}</p>
+        <p>${user1.introduce}</p>
     </div>
     <div class="layui-tab" lay-filter="test" style="width: 930px; margin: auto;background-color: #F8F8F8; margin-bottom: 1%;">
-        <div style="margin-left: 32%;">
-                <ul class="layui-tab-title">
-                    <li lay-id="22"><a href="/user/myIndex" style="text-decoration:none">我的主页</a></li>
-                    <li></li>
-                    <li lay-id="33" class="layui-this"><a  style="text-decoration:none" href="/user/myAlbum">相册</a></li>
-                    <li></li>
-                    <li lay-id="44"><a  href="/user/myInformation" style="text-decoration:none">个人资料</a></li>
-                </ul>
+        <div style="margin-left: 40%;">
+            <ul class="layui-tab-title">
+                <li lay-id="22"><a href="/Index?userId=${user1.id}" style="text-decoration:none">主页</a></li>
+                <li></li>
+                <li lay-id="33" class="layui-this"><a  style="text-decoration:none" href="/album?userId=${user1.id}">相册</a></li>
+            </ul>
         </div>
     </div>
 
     <div style="width: 930px;margin: auto;">
         <div style="width: 100%;height: 530px;float: right;background-color: #F8F8F8;overflow:auto;margin-bottom: 50px;">
             <div id="layer-photos-demo" class="layer-photos-demo" >
-                <div class="layui-tab" lay-filter="test" style="width: 100%; margin: auto;background-color: #F8F8F8; margin-bottom: 1%;">
-                    <div>
-                        <ul class="layui-tab-title">
-                            <li></li><li></li><li></li><li></li><li></li>
-                            <li lay-id="22" class="layui-this" style="margin-left: 30px;"><a href="#" style="text-decoration:none">全部</a></li>
-                            <li></li>
-                            <li></li>
-                            <li lay-id="44"><a  href="/updateAlbum" style="text-decoration:none">编辑</a></li>
-                        </ul>
-                    </div>
-                </div>
                 <c:if test="${picture!=null}">
                     <c:forEach items="${picture}" var="picture">
                         <img layer-pid="" layer-src="${picture.src}" src="${picture.src}" alt="" style="width: 166px;height: 130px;margin-left: 11px;margin-top: 8px;margin-bottom:8px;border: 1px solid #9F9F9F" >

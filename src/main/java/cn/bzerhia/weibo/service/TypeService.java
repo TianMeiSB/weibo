@@ -6,6 +6,7 @@ import java.util.List;
 
 public interface TypeService {
     List<Type> findAll();
+    List<Type> findAll2();
     int addType(Type type);
     int update(Type type);
     int delete(Integer typeId);

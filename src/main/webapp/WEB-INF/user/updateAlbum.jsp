@@ -48,6 +48,9 @@
                     <button type="submit" class="btn btn-default">GO</button>
                 </form>
                 <ul class="nav navbar-nav navbar-right">
+                    <c:if test="${empty user}">
+                        <li><a href="/login">登陆</a></li>
+                    </c:if>
                     <li><a href="#" style="text-decoration:none">关于本站</a></li>
                     <c:if test="${not empty user}">
 
@@ -104,7 +107,7 @@
                     <div>
                         <ul class="layui-tab-title">
                             <li></li><li></li><li></li><li></li><li></li>
-                            <li lay-id="22" style="margin-left: 30px;"><a href="#" style="text-decoration:none">全部</a></li>
+                            <li lay-id="22" style="margin-left: 30px;"><a href="/user/myAlbum" style="text-decoration:none">全部</a></li>
                             <li></li>
                             <li></li>
                             <li lay-id="44" class="layui-this"><a  href="/updateAlbum" style="text-decoration:none">编辑</a></li>
@@ -113,7 +116,6 @@
                 </div>
                 <c:if test="${blogList!=null}">
                     <table class="table table-bordered">
-                        <tr><th>缩略图</th><th>ID</th><th>SRC</th><th>所属微博</th><th>操作</th></tr>
                         <c:forEach items="${blogList}" var="list">
                             <c:set value="${list.picture}" var="picture"/>
                             <c:forEach items="${picture}" var="picture2">

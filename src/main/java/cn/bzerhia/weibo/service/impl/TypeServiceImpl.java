@@ -12,6 +12,8 @@ import java.util.List;
 
 @Service
 public class TypeServiceImpl implements TypeService {
+
+
     private MyBatisUtil myBatisUtil;
     private TypeMapper typeMapper;
     private SqlSession session;
@@ -30,7 +32,13 @@ public class TypeServiceImpl implements TypeService {
         close();
         return all;
     }
-
+    @Override
+    public List<Type> findAll2() {
+        init();
+        List<Type> all = typeMapper.findAll2();
+        close();
+        return all;
+    }
     @Override
     public int addType(Type type) {
         init();

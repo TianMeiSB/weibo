@@ -26,7 +26,7 @@ public class PictureController {
     public String update(HttpSession session, Model model){
         User user = (User)session.getAttribute("user");
         if(user==null){
-            return "index";
+            return "redirect:index";
         }else{
             List<Blog> blogList = blogService.findByPhoto(user.getId());
             model.addAttribute("blogList",blogList);

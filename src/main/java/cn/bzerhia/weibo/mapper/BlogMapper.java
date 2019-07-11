@@ -9,6 +9,7 @@ import java.util.List;
 @Repository
 public interface BlogMapper extends BaseMapper<Blog> {
    List<Blog> findAll();
+   List<Blog> findAll2();
    int addBlog(Blog blog);
    Blog findByTitle(String title);
    Blog findById(Integer id);

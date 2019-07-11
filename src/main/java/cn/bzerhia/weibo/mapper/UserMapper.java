@@ -5,6 +5,8 @@ import com.baomidou.mybatisplus.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
 public interface UserMapper extends BaseMapper<User> {
     User findByUsername(String username);
@@ -13,4 +15,6 @@ public interface UserMapper extends BaseMapper<User> {
     void updateTX(@Param("src")String image,@Param("userId")Integer userId);
     int updateUser(User user);
     User findById(Integer userId);
+    List<User> findAll();
+    int updateType(@Param("type")Integer type,@Param("userId")Integer userId);
 }

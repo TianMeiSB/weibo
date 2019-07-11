@@ -7,6 +7,9 @@
 	<select id="findAll" resultType="Type">
 		SELECT * FROM t_type WHERE id>2
 	</select>
+	<select id="findAll2" resultType="Type">
+		SELECT * FROM t_type
+	</select>
 	<insert id="addType"  parameterType="Type" useGeneratedKeys="true" keyProperty="id">
 		INSERT INTO t_type(classification) VALUES(#{classification})
 	</insert>

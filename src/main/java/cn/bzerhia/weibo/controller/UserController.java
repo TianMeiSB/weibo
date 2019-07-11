@@ -2,12 +2,15 @@ package cn.bzerhia.weibo.controller;
 import cn.bzerhia.weibo.constant.Constant;
 import cn.bzerhia.weibo.entity.Blog;
 import cn.bzerhia.weibo.entity.Picture;
+import cn.bzerhia.weibo.entity.Type;
 import cn.bzerhia.weibo.entity.User;
 import cn.bzerhia.weibo.service.BlogService;
 import cn.bzerhia.weibo.service.PictureService;
+import cn.bzerhia.weibo.service.TypeService;
 import cn.bzerhia.weibo.service.UserService;
 import cn.bzerhia.weibo.service.impl.BlogServiceImpl;
 import cn.bzerhia.weibo.service.impl.PictureServiceImpl;
+import cn.bzerhia.weibo.service.impl.TypeServiceImpl;
 import cn.bzerhia.weibo.service.impl.UserServiceImpl;
 import cn.bzerhia.weibo.util.MD5Utils;
 import org.springframework.stereotype.Controller;
@@ -27,19 +30,30 @@ public class UserController {
     private UserService userService;
     private PictureService pictureService;
     private BlogService blogService;
+    private TypeService typeService;
 
     public UserController() {
         userService = new UserServiceImpl();
         pictureService = new PictureServiceImpl();
         blogService = new BlogServiceImpl();
+        typeService = new TypeServiceImpl();
     }
     @GetMapping("index")
-    public String index(){
+    public String index(Model model){
+        List<Blog> blogList = blogService.findAll2();
+        List<Type> typeList = typeService.findAll2();
+        model.addAttribute("blogList",blogList);
+        model.addAttribute("typeList",typeList);
         return "index";
     }
     @GetMapping("admin")
-    public String admin(){
-        return "admin/index";
+    public String admin(HttpSession session){
+        User user = (User)session.getAttribute("user");
+        if (user.getType()!=1){
+            return "redirect:index";
+        }else {
+            return "admin/index";
+        }
     }
     @GetMapping("login")
     public String login(){
@@ -53,19 +67,49 @@ public class UserController {
     public String myIndex(HttpSession session,Model model){
         User user = (User)session.getAttribute("user");
         if(user==null){
-            return "index";
+            return "redirect:index";
         }else{
             List<Blog> blogList = blogService.findByUserId(user.getId());
             model.addAttribute("blogList",blogList);
             return "user/myIndex";
         }
     }
+    @GetMapping("Index")
+    public String index2(Integer userId,HttpSession session,Model model){
+        User user = (User)session.getAttribute("user");
+        User byUserId = userService.findById(userId);
+        List<Blog> blogList = blogService.findByUserId(userId);
+        if(user!=null){
+            if(userId==user.getId()){
+                model.addAttribute("blogList",blogList);
+                return "user/myIndex";
+            }
+        }
+        model.addAttribute("byUserId",byUserId);
+        model.addAttribute("blogList",blogList);
+        return "user/uIndex";
 
+    }
+    @GetMapping("album")
+    public String album(HttpSession session,Integer userId,Model model){
+        User user = (User)session.getAttribute("user");
+        User user1 = userService.findById(userId);
+        List<Picture> pictures = pictureService.findByUserId(userId);
+        if(user!=null){
+            if (user.getId()==user1.getId()){
+                model.addAttribute("picture",pictures);
+                return "user/myAlbum";
+            }
+        }
+        model.addAttribute("user1",user1);
+        model.addAttribute("picture",pictures);
+        return "user/uAlbum";
+    }
     @GetMapping("user/myInformation")
     public String myInformation(HttpSession session,Model model){
         User user = (User)session.getAttribute("user");
         if(user==null){
-            return "index";
+            return "redirect:index";
         }else{
             List<Blog> blogList = blogService.findByUserId(user.getId());
             model.addAttribute("blogList",blogList);
@@ -76,7 +120,7 @@ public class UserController {
     public String myAlbum(HttpSession session,Model model){
         User user = (User)session.getAttribute("user");
         if(user==null){
-            return "index";
+            return "redirect:index";
         }else{
             List<Picture> pictures = pictureService.findByUserId(user.getId());
             model.addAttribute("picture",pictures);
@@ -91,6 +135,10 @@ public class UserController {
             return;
         }
         User user = userService.findByUsername(username);
+        if(user.getType()==3){
+            response.getWriter().write("err4");
+            return;
+        }
         if (user==null){
             response.getWriter().write("err3");
         }else{
@@ -112,7 +160,7 @@ public class UserController {
     public String logout(HttpSession session){
         session.invalidate();
         UploadController.remove();
-        return "index";
+        return "redirect:index";
     }
 
 
@@ -201,6 +249,20 @@ public class UserController {
             response.getWriter().write("ok");
         }else{
             response.getWriter().write("error2");
+        }
+    }
+    @PostMapping("updateType")
+    public void updateType(Integer type,Integer userId,HttpServletResponse response)
+            throws IOException{
+        if (type==null||userId==null){
+            response.getWriter().write("error");
+            return;
+        }
+        int row = userService.updateType(type, userId);
+        if (row>0){
+            response.getWriter().write("ok");
+        }else{
+            response.getWriter().write("error");
         }
     }
 }

@@ -2,10 +2,13 @@ package cn.bzerhia.weibo.controller;
 
 import cn.bzerhia.weibo.entity.Blog;
 import cn.bzerhia.weibo.entity.Picture;
+import cn.bzerhia.weibo.entity.User;
 import cn.bzerhia.weibo.service.BlogService;
 import cn.bzerhia.weibo.service.PictureService;
+import cn.bzerhia.weibo.service.UserService;
 import cn.bzerhia.weibo.service.impl.BlogServiceImpl;
 import cn.bzerhia.weibo.service.impl.PictureServiceImpl;
+import cn.bzerhia.weibo.service.impl.UserServiceImpl;
 import cn.bzerhia.weibo.util.MathUtil;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -20,9 +23,11 @@ import java.util.List;
 public class WeiboController {
     private BlogService blogService;
     private PictureService pictureService;
+    private UserService userService;
     public WeiboController() {
         blogService = new BlogServiceImpl();
         pictureService = new PictureServiceImpl();
+        userService = new UserServiceImpl();
     }
 
     @PostMapping("addWeibo")
@@ -32,6 +37,11 @@ public class WeiboController {
                 text==null||text.equals("")||
                 type==null||userId==null){
             response.getWriter().write("err1");
+            return;
+        }
+        User user = userService.findById(userId);
+        if (user.getType()==2){
+            response.getWriter().write("err3");
             return;
         }
         Integer id = MathUtil.blogId();
@@ -60,7 +70,7 @@ public class WeiboController {
         if(row>0){
             response.getWriter().write("ok");
         }else{
-            response.getWriter().write("error2");
+            response.getWriter().write("err2");
         }
     }
 }

@@ -34,6 +34,14 @@ public class BlogServiceImpl implements BlogService {
     }
 
     @Override
+    public List<Blog> findAll2() {
+        init();
+        List<Blog> blogList = blogMapper.findAll2();
+        close();
+        return blogList;
+    }
+
+    @Override
     public int addBlog(Blog blog) {
         init();
         int row = blogMapper.addBlog(blog);

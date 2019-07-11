@@ -48,6 +48,9 @@
                     <button type="submit" class="btn btn-default">GO</button>
                 </form>
                 <ul class="nav navbar-nav navbar-right">
+                    <c:if test="${empty user}">
+                        <li><a href="/login">登陆</a></li>
+                    </c:if>
                     <li><a href="#" style="text-decoration:none">关于本站</a></li>
                     <c:if test="${not empty user}">
 

@@ -2,7 +2,6 @@ package cn.bzerhia.weibo.entity;
 
 import com.baomidou.mybatisplus.annotations.TableName;
 import lombok.Data;
-
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -22,14 +21,8 @@ public class Comment {
     private Date replyTime;//评论时间
     private String picture;//评论图片
     private List<Comment> comments = new ArrayList<Comment>();//楼中楼
-
-    @Override
-    public String toString() {
-        return "Comment{" +
-                "id=" + id +
-                ", text='" + text + '\'' +
-                ", replyTime=" + replyTime +
-                ", picture='" + picture + '\'' +
-                '}';
-    }
+    private Integer masterId;
+    private Integer type;
+    private Integer commentId;
+    private Integer commId;
 }

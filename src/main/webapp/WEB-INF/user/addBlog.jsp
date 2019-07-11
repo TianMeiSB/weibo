@@ -9,7 +9,7 @@
     <link rel="stylesheet" href="${ctx}/static/layui/css/layui.css">
     <meta http-equiv="Content-Type" content="multipart/form-data; charset=utf-8" />
 </head>
-<body>
+<body style="background: #D3E2EE;">
 <nav class="navbar navbar-default navbar-fixed-top"  style="background-color: #E7EAED;">
     <div class="container-fluid">
         <!-- Brand and toggle get grouped for better mobile display -->
@@ -44,6 +44,9 @@
                 <button type="submit" class="btn btn-default">GO</button>
             </form>
             <ul class="nav navbar-nav navbar-right">
+                <c:if test="${empty user}">
+                    <li><a href="/login">登陆</a></li>
+                </c:if>
                 <li><a href="#">关于本站</a></li>
                 <c:if test="${not empty user}">
 
@@ -214,6 +217,10 @@
                 }else if(xmlhttp.responseText=='err3'){
                     layer.ready(function(){
                         layer.msg('发布失败，请编辑完整内容！');
+                    });
+                }else if(xmlhttp.responseText=='err4'){
+                    layer.ready(function(){
+                        layer.msg('发布失败，您已被禁言！');
                     });
                 }else{
                     layer.ready(function(){

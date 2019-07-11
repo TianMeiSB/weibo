@@ -12,33 +12,21 @@
 <body>
 <div class="layui-layout layui-layout-admin">
     <div class="layui-header">
-        <div class="layui-logo">layui 后台布局</div>
+        <div class="layui-logo">帅鹏博客后台首页</div>
         <!-- 头部区域（可配合layui已有的水平导航） -->
-        <ul class="layui-nav layui-layout-left">
-            <li class="layui-nav-item"><a href="">控制台</a></li>
-            <li class="layui-nav-item"><a href="">商品管理</a></li>
-            <li class="layui-nav-item"><a href="">用户</a></li>
-            <li class="layui-nav-item">
-                <a href="javascript:;">其它系统</a>
-                <dl class="layui-nav-child">
-                    <dd><a href="">邮件管理</a></dd>
-                    <dd><a href="">消息管理</a></dd>
-                    <dd><a href="">授权管理</a></dd>
-                </dl>
-            </li>
-        </ul>
+
         <ul class="layui-nav layui-layout-right">
             <li class="layui-nav-item">
                 <a href="javascript:;">
-                    <img src="http://t.cn/RCzsdCq" class="layui-nav-img">
-                    贤心
+                    <img src="${user.image}" class="layui-nav-img">
+                    ${user.username}
                 </a>
                 <dl class="layui-nav-child">
                     <dd><a href="">基本资料</a></dd>
                     <dd><a href="">安全设置</a></dd>
                 </dl>
             </li>
-            <li class="layui-nav-item"><a href="">退了</a></li>
+            <li class="layui-nav-item"><a href="/logout">退了</a></li>
         </ul>
     </div>
 
@@ -47,31 +35,53 @@
             <!-- 左侧导航区域（可配合layui已有的垂直导航） -->
             <ul class="layui-nav layui-nav-tree"  lay-filter="test">
                 <li class="layui-nav-item layui-nav-itemed">
-                    <a class="" href="javascript:;">所有商品</a>
+                    <a class="" href="javascript:;">用户管理</a>
                     <dl class="layui-nav-child">
-                        <dd><a href="javascript:;">列表一</a></dd>
-                        <dd><a href="javascript:;">列表二</a></dd>
-                        <dd><a href="javascript:;">列表三</a></dd>
-                        <dd><a href="">超链接</a></dd>
+                        <dd><a href="/findAllUser">用户列表</a></dd>
                     </dl>
                 </li>
                 <li class="layui-nav-item">
-                    <a href="javascript:;">解决方案</a>
+                    <a href="javascript:;">帖子管理</a>
                     <dl class="layui-nav-child">
-                        <dd><a href="javascript:;">列表一</a></dd>
-                        <dd><a href="javascript:;">列表二</a></dd>
-                        <dd><a href="">超链接</a></dd>
+                        <dd><a href="javascript:;">帖子列表</a></dd>
+                        <dd><a href="javascript:;">图片管理</a></dd>
+                        <dd><a href="javascript:;">回复列表</a></dd>
                     </dl>
                 </li>
-                <li class="layui-nav-item"><a href="">云市场</a></li>
-                <li class="layui-nav-item"><a href="">发布商品</a></li>
+
             </ul>
         </div>
     </div>
 
     <div class="layui-body">
-        <!-- 内容主体区域 -->
-        <div style="padding: 15px;">内容主体区域</div>
+        <c:if test="${userList!=null}">
+        <table class="table table-bordered">
+            <tr><th>头像</th><th>ID</th><th>用户名</th><th>状态</th><th>性别</th><th>手机号</th><th>地址</th><th>注册时间</th><th>个性签名</th><th>操作</th></tr>
+            <c:forEach items="${userList}" var="user">
+            <tr><td><img src="${user.image}" style="width: 40px;height: 40px;"></td>
+                <td>${user.id}</td>
+                <td>${user.username}</td>
+                <td>
+                    <c:if test="${user.type==0}">正常</c:if>
+                    <c:if test="${user.type==2}">禁言中</c:if>
+                    <c:if test="${user.type==3}">已封号</c:if>
+                </td>
+                <td>${user.sex}</td>
+                <td>${user.phone}</td>
+                <td>${user.address}</td>
+                <td><fmt:formatDate value="${user.registerTime}" pattern="yyyy-MM-dd hh:mm:ss"/></td>
+                <td>${user.introduce}</td>
+                <td>
+                    <c:if test="${user.type==2}"><button name="${user.id}" type="button" class="layui-btn layui-btn-xs layui-btn-warm" onclick="jiechu(userId=this.name);" >解禁</button></c:if>
+                    <c:if test="${user.type!=2}"><button name="${user.id}" type="button" class="layui-btn layui-btn-xs layui-btn-warm" onclick="jinyan(userId=this.name);" >禁言</button></c:if>
+                    <c:if test="${user.type==3}"><button name="${user.id}" type="button" class="layui-btn layui-btn-xs layui-btn-normal" style="margin-left: 0px;" onclick="jiechu(userId=this.name);">解封</button><br></c:if>
+                    <c:if test="${user.type!=3}"><button name="${user.id}" type="button" class="layui-btn layui-btn-xs layui-btn-normal" style="margin-left: 0px;" onclick="fenghao(userId=this.name);">封号</button><br></c:if>
+                    <a href="javascript:;" type="button" class="layui-btn layui-btn-xs" style="margin-left: 0px;margin-top: 2px">修改</a>
+                </td>
+            </tr>
+            </c:forEach>
+        </table>
+        </c:if>
     </div>
 
     <div class="layui-footer">
@@ -90,5 +100,78 @@
         var element = layui.element;
 
     });
+    layui.use('layer',function () {
+        var layer = layui.layer;
+    })
+    function jinyan(userId) {
+        var xmlhttp = new XMLHttpRequest();
+        xmlhttp.open("POST","${ctx}/updateType",true);
+        xmlhttp.setRequestHeader("Content-type","application/x-www-form-urlencoded");
+        xmlhttp.send("type="+2+"&userId="+userId);
+        xmlhttp.onreadystatechange=function(){
+            if (xmlhttp.readyState==4 && xmlhttp.status==200){
+                if(xmlhttp.responseText=='ok'){
+                    layer.ready(function(){
+                        layer.msg('已禁言！');
+                    });
+                    window.setTimeout(index,2000);
+                    function index() {
+                        location.reload();
+                    }
+                }else if(xmlhttp.responseText=='error'){
+                    layer.ready(function(){
+                        layer.msg('禁言失败！');
+                    });
+                }
+            }
+        }
+    }
+    function fenghao(userId) {
+        var xmlhttp = new XMLHttpRequest();
+        xmlhttp.open("POST","${ctx}/updateType",true);
+        xmlhttp.setRequestHeader("Content-type","application/x-www-form-urlencoded");
+        xmlhttp.send("type="+3+"&userId="+userId);
+        xmlhttp.onreadystatechange=function(){
+            if (xmlhttp.readyState==4 && xmlhttp.status==200){
+                if(xmlhttp.responseText=='ok'){
+                    layer.ready(function(){
+                        layer.msg('已封号！');
+                    });
+                    window.setTimeout(index,2000);
+                    function index() {
+                        location.reload();
+                    }
+                }else if(xmlhttp.responseText=='error'){
+                    layer.ready(function(){
+                        layer.msg('封号失败！');
+                    });
+                }
+            }
+        }
+    }
+    
+    function jiechu(userId) {
+        var xmlhttp = new XMLHttpRequest();
+        xmlhttp.open("POST","${ctx}/updateType",true);
+        xmlhttp.setRequestHeader("Content-type","application/x-www-form-urlencoded");
+        xmlhttp.send("type="+0+"&userId="+userId);
+        xmlhttp.onreadystatechange=function(){
+            if (xmlhttp.readyState==4 && xmlhttp.status==200){
+                if(xmlhttp.responseText=='ok'){
+                    layer.ready(function(){
+                        layer.msg('已成功解除处罚');
+                    });
+                    window.setTimeout(index,2000);
+                    function index() {
+                        location.reload();
+                    }
+                }else if(xmlhttp.responseText=='error'){
+                    layer.ready(function(){
+                        layer.msg('解除失败');
+                    });
+                }
+            }
+        }
+    }
 </script>
 </html>

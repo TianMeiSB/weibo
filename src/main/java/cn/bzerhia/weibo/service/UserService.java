@@ -2,7 +2,10 @@ package cn.bzerhia.weibo.service;
 
 import cn.bzerhia.weibo.entity.User;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 public interface UserService {
     User findByUsername(String username);
@@ -11,4 +14,6 @@ public interface UserService {
     void updateTX(String src,Integer userId);
     int updateUser(User user);
     User findById(Integer userId);
+    List<User> findAll();
+    int updateType(Integer type,Integer userId);
 }

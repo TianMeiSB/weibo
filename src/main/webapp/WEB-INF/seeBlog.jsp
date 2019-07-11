@@ -8,7 +8,10 @@
     <link href="${ctx}/static/font-awesome-4.7.0/css/font-awesome.min.css" rel="stylesheet">
     <link rel="stylesheet" href="${ctx}/static/layui/css/layui.css">
 </head>
-<body style="background:#F8F8F8">
+<style>
+
+</style>
+<body style="background: #D3E2EE;background-attachment:fixed">
 <nav class="navbar navbar-default navbar-fixed-top"  style="background-color: #E7EAED;">
     <div class="container-fluid">
         <!-- Brand and toggle get grouped for better mobile display -->
@@ -43,6 +46,9 @@
                 <button type="submit" class="btn btn-default">GO</button>
             </form>
             <ul class="nav navbar-nav navbar-right">
+                <c:if test="${empty user}">
+                    <li><a href="/login">登陆</a></li>
+                </c:if>
                 <li><a href="#">关于本站</a></li>
                 <c:if test="${not empty user}">
 
@@ -67,62 +73,142 @@
         </div><!-- /.navbar-collapse -->
     </div><!-- /.container-fluid -->
 </nav>
-<div style="width: 700px;height:91%;background-color: #F8F8F8;margin: auto;margin-top: 4%;">
-
-        <div style="width: 99%;height: 400px;background-color: #FFFFFF;margin: 3px;margin-top: 10px;margin-bottom: 0;">
+<div style="width: 700px;min-height:100%;background-color: #FFFFFF;margin: auto;margin-top: 4%; background-attachment:fixed">
+    <div style="background-color: #FFFFFF">
+        <div style="width: 99%;background-color: #FFFFFF;margin: 3px;margin-top: 10px;margin-bottom: 0;">
             <div style="width: 70px;height: 70px;margin-left: 1%;margin-top: 2%;float: left;">
-                <img src="${blog.user.image}" alt="..." class="img-circle" style="width: 100%;height:100%;border: 1px solid #9F9F9F">
+                <a href="/Index?userId=${blog.user.id}"><img src="${blog.user.image}" alt="..." class="img-circle" style="width: 100%;height:100%;border: 1px solid #9F9F9F"></a>
             </div>
-            <div style="width: 79%;height: 93%;float: left;margin-left: 1%;margin-top: 2%;">
-                <div style="width: 100%;height: 35%;">
-                    <div style="width: 100%;height: 40%;">
-                        <p>${blog.user.username}</p>
-                        <p><fmt:formatDate value="${blog.publishTime}" pattern="yyyy-MM-dd hh:mm:ss"/></p>
-                        <div style="float: left"><c:if test="${blog.blogType==0}"><a href="#">#微博#</a></c:if><c:if test="${blog.blogType==1}"><a href="#">#博客#</a></c:if></div><p  style="float: left;font-size: 14px">&nbsp;${blog.title}</p>
+            <div style="width: 87%;float: left;margin-left: 1%;margin-top: 2%;">
+                <div style="width: 100%;">
+                    <div style="width: 90%;float: left">
+                        <div style="width: 100%">
+                            <a href="/Index?userId=${blog.user.id}"><p style="margin-bottom: 3px;width: 90%;color: #EB7350">${blog.user.username}</p></a>
+                        </div>
                     </div>
-                    <div style="width: 100%;height: 60%;font-size: 18px;word-wrap:break-word;">${blog.text}</div>
+                    <div style="width: 10%;float: right">
+                        <li class="dropdown" style="float: left">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">操作<span class="caret"></span></a>
+                            <ul class="dropdown-menu">
+                                <li><a href="#">修改</a></li>
+                                <li><a href="#">删除</a></li>
+                            </ul>
+                        </li>
+                    </div>
+                    <br/>
+                    <div style="float: left;width: 100%"><p style="margin-bottom: 3px;color: deepskyblue"><fmt:formatDate value="${blog.publishTime}" pattern="yyyy-MM-dd hh:mm:ss"/></p></div>
+                    <div style="float: left"><c:if test="${blog.blogType==0}"><a href="#">#微博#</a></c:if><c:if test="${blog.blogType==1}"><a href="#">#博客#</a></c:if></div>
+                    <p style="float: left;font-size: 14px">&nbsp;${blog.title}</p>
+                    <br/>
+                    <div style="width: 100%;font-size: 18px;word-wrap:break-word;<c:if test="${blog.blogType==0}">margin-bottom: 10px;float: left;margin-top: 3px;</c:if><c:if test="${blog.blogType==1}">margin-bottom: 20px;float: left;margin-top: 20px;</c:if>">${blog.text}</div>
                 </div>
-                <div style="width: 450px;height: 100px;overflow :hidden;">
-                    <div  class="layer-photos-demo">
-                        <c:set value="${blog.picture}" var="picture"/>
-                        <c:if test="${blog.blogType==0}">
+                <c:set value="${blog.picture}" var="picture"/>
+                <c:if test="${blog.blogType==0}">
+                    <div style="width: 450px;min-height:120px;overflow :hidden;">
+                        <div  class="layer-photos-demo" style="width: 100%;">
                             <c:forEach items="${picture}" var="picture2">
-                                <img layer-pid="" layer-src="${picture2.src}" src="${picture2.src}"  style="width: 130px;height: 100px; margin-right: 15px;">
+                                <img layer-pid="" layer-src="${picture2.src}" src="${picture2.src}"  style="width: 130px;height: 100px; margin-right: 15px;margin-bottom: 15px;">
                             </c:forEach>
-                        </c:if>
-
+                        </div>
                     </div>
+                </c:if>
+            </div>
+        </div>
+        <div style="width: 100%;height: 45px;">
+            <div style="width: 25%;height: 100%;float: left;text-align: center;border: 1px solid #DDDDDD;border-right: none;background-color: #F8F8F8"><div style="margin-top: 7%;"><a href="#" style="text-decoration:none"><i class="layui-icon layui-icon-rate"></i> 收藏</a></div></div>
+            <div style="width: 25%;height: 100%;float: left;text-align: center;border: 1px solid #DDDDDD;border-right: none;background-color: #F8F8F8"><div style="margin-top: 7%;"><a href="#" style="text-decoration:none"><i class="layui-icon layui-icon-share"></i> 分享</a></div></div>
+            <c:set value="${blog.comment}" var="comm"/>
+            <div style="width: 25%;height: 100%;float: left;text-align: center;border: 1px solid #DDDDDD;border-right: none;background-color: #F8F8F8"><div style="margin-top: 7%;"><a href="#" style="text-decoration:none"><i class="layui-icon layui-icon-dialogue"></i> 评论</a></div></div>
+            <div style="width: 25%;height: 100%;float: left;text-align: center;border: 1px solid #DDDDDD;background-color: #F8F8F8"><div style="margin-top: 7%;"><a href="#" style="text-decoration:none"><i class="layui-icon layui-icon-praise"></i> 点赞</a></div></div>
+        </div>
+    </div>
+    <div style="width: 100%;min-height: 100%;float: left;background-color: #D3E2EE">
+        <div style="width: 100%;min-height: 100%;background-color: #FFFFFF">
+            <div style="width: 100%;height: 50px;background-color: #F8F8F8;border: 1px solid #DDDDDD;border-top: none;">
+                <div style="width: 94%;height: 50px;background-color: #F8F8F8;margin: auto;border-bottom: 1px solid #DDDDDD;">
+                    <div style="width: 8%;height: 89%;float: left;margin:3px;">
+                        <img src="<c:if test="${user!=null}">${user.image}</c:if><c:if test="${user==null}">/images/touxiang/1.jpg</c:if>" alt="..." style="width: 100%;height: 100%;border: 1px solid #DDDDDD">
+                    </div>
+                    <form>
+                        <div style="width: 80%;height: 100%;float: left">
+                            <input type="hidden" id="blogId" value="${blog.id}">
+                            <input type="hidden" id="masterId" value="${blog.user.id}">
+                            <input type="text" name="title" lay-verify="title" autocomplete="off" placeholder="文明用语，请勿散布谣言" class="layui-input" style="margin-top: 5px;" id="text">
+                        </div>
+                        <div style="height: 100%;width: 11%;float: left">
+                            <input class="layui-btn" lay-submit="" lay-filter="demo1" style="margin-top: 5px;" value="评论" type="button" id="addComment">
+                        </div>
+                    </form>
                 </div>
             </div>
-            <div style="width: 8%;height: 93%;margin-top: 2%;float: left;">
-                <li class="dropdown">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">操作<span class="caret"></span></a>
-                    <ul class="dropdown-menu">
-                        <li><a href="#">修改</a></li>
-                        <li><a href="#">删除</a></li>
-                    </ul>
-                </li>
-            </div>
-        </div>
-        <div style="width: 99%;height: 45px;margin: 3px;margin-top: 0;">
-            <div style="width: 25%;height: 100%;float: left;text-align: center;border: 1px solid #DDDDDD;border-right: none;"><div style="margin-top: 7%;"><a href="#" style="text-decoration:none">推广</a></div></div>
-            <div style="width: 25%;height: 100%;float: left;text-align: center;border: 1px solid #DDDDDD;border-right: none;"><div style="margin-top: 7%;"><a href="#" style="text-decoration:none"><i class="layui-icon layui-icon-share"></i> 分享</a></div></div>
-            <c:set value="${blog.comment}" var="comm"/>
-            <div style="width: 25%;height: 100%;float: left;text-align: center;border: 1px solid #DDDDDD;border-right: none;"><div style="margin-top: 7%;"><a href="#" style="text-decoration:none"><i class="layui-icon layui-icon-dialogue"></i>${comm.size()}</a></div></div>
-            <div style="width: 25%;height: 100%;float: left;text-align: center;border: 1px solid #DDDDDD"><div style="margin-top: 7%;"><a href="#" style="text-decoration:none"><i class="layui-icon layui-icon-praise"></i> 点赞</a></div></div>
-        </div>
+            <c:forEach items="${comm}" var="comment">
+                <c:if test="${comment.user1!=null}">
+                    <%--<input type="hidden" class="commentId" value="">--%>
+                <div style="width: 94%;min-height: 100px;background-color: #FFFFFF;margin: auto">
+                    <div style="width: 100%;min-height: 60px;">
+                        <div style="width: 50px;height: 45px;float: left;margin:3px;margin-top: 10px;">
+                            <a href="/Index?userId=${comment.user1.id}"><img src="${comment.user1.image}" alt="..."  style="width: 100%;height: 100%;border: 1px solid #DDDDDD"></a>
+                        </div>
+                        <div style="width: 91%;min-height: 60px;float: right;word-wrap:break-word;margin-top: 10px;">
+                            <a href="/Index?userId=${comment.user1.id}" style="color: #EB7350">${comment.user1.username}</a>：<br/>${comment.text}
+                        </div>
+                    </div>
+                    <div style="width: 91%;margin-left: 60px;height: 32px;">
+                        <div style="width: 50%;float: left;color: deepskyblue">
+                            <fmt:formatDate value="${comment.replyTime}" pattern="yyyy-MM-dd hh:mm:ss"/>
+                        </div>
+                        <div style="width: 48%;float: left">
+                            <div style="float: right">
+                            <a href="javascript:;"  style="color: #985f0d" data-name="${comment.id}" class="demo" onclick="dianji(this)" data-userid="${comment.user1.id}" data-commentid="${comment.id}">回复</a>
+                            &nbsp;
+                            <a href="#" style="color: #985f0d">举报</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="error">
+                        <div class="${comment.id}">
 
-    <c:forEach items="${comm}" var="comment">
-        ${comment.text}
-    </c:forEach>
+                        </div>
+                    </div>
+                    <c:set value="${comment.comments}" var="comm2"/>
+                    <c:forEach items="${comm2}" var="comment2">
+                        <div style="width: 80%;min-height: 50px;word-wrap:break-word;background-color: #FFFFFF;margin-left: 58px;margin-top: 1px;">
+                                <div style="width: 100%;min-height: 50px;">
+                                    <div style="width: 100%;min-height: 25px;margin: auto;word-wrap:break-word;">
+                                        <a href="/Index?userId=${comment2.user1.id}" style="color: #EB7350;">${comment2.user1.username}</a>回复：${comment2.text}
+                                    </div>
+                                    <div style="width: 100%;height: 24px;margin: auto;border-bottom: 1px solid #DDDDDD">
+                                        <div style="width: 50%;height: 100%;float: left;color: deepskyblue">
+                                            <fmt:formatDate value="${comment2.replyTime}" pattern="yyyy-MM-dd hh:mm:ss"/>
+                                        </div>
+                                        <div style="width: 50%;float: right">
+                                            <div style="float: right">
+                                                <a href="javascript:;" style="color: #985f0d" data-name="${comment2.id}" class="demo" onclick="dianji(this)" data-userid="${comment2.user1.id}" data-commentid="${comment.id}" data-commid="${comment2.id}">回复</a>
+                                                &nbsp;
+                                                <a href="#"style="color: #985f0d">举报</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                        </div>
+                        <div class="error">
+                            <div class="${comment2.id}">
+
+                            </div>
+                        </div>
+                    </c:forEach>
+                </div>
+                </c:if>
+            </c:forEach>
+        </div>
+    </div>
+
 </div>
 </body>
 <script src="${ctx}/static/js/jquery-3.3.1.js"></script>
 <script src="${ctx}/static/layui/layui.js"></script>
 <script src="${ctx}/static/bootstrap-3.3.7-dist/js/bootstrap.min.js"></script>
 <script>
-
-
     layui.use(['form', 'layedit', 'laydate'], function(){
         var form = layui.form
             ,layer = layui.layer
@@ -139,61 +225,99 @@
         //创建一个编辑器
         var editIndex = layedit.build('LAY_demo_editor');
     });
-    layui.use('upload', function() {
-        var $ = layui.jquery
-            , upload = layui.upload;
-        //多图片上传
-        upload.render({
-            elem: '#test2'
-            ,url: '${ctx}/upload'
-            ,multiple: true
-            ,before: function(obj){
-                //预读本地文件示例，不支持ie8
-                obj.preview(function(index, file, result){
-                    $('#demo2').append('<img src="'+ result +'" alt="'+ file.name +'" class="layui-upload-img" style="width: 70px;height: 70px;margin-left: 10px;">')
-                });
-            }
-            ,done: function(res){
-                //上传完毕
-            }
+    layui.use('layer',function () {
+        layer.photos({
+            photos: '.layer-photos-demo'
+            , anim: 2 //0-6的选择，指定弹出图片动画类型，默认随机（请注意，3.0之前的版本用shift参数）
         });
     });
+    var commentId,userId;
+    function dianji(obj) {
+        var coment = obj.dataset.name;
+        userId = obj.dataset.userid;
+        commentId = obj.dataset.commentid;
+        var commId = obj.dataset.commid;
+        $(".error div").empty();
+        $("."+coment).html('<from><div style="width: 80%;min-height: 50px;word-wrap:break-word;margin-left: 58px;margin-top: 1px;">\n' +
+            '                                    <div style="width: 88%;float: left">\n' +
+            '                                        <input type="text" name="title" lay-verify="title" autocomplete="off" placeholder="文明用语，请勿散布谣言" class="layui-input" style="margin-top: 5px;" id="test">\n' +
+            '                                    </div>\n' +
+            '                                    <div style="width: 11%;float: left">\n' +
+            '                                        <input class="layui-btn" lay-submit="" lay-filter="demo1" style="margin-top: 5px;" value="回复" type="button" id="add">\n' +
+            '                                    </div>\n' +
+            '                                </div></from>');
+        $("#add").click(function(){
+            var xmlhttp = new XMLHttpRequest();
+            xmlhttp.open("POST","${ctx}/addComment2",true);
+            xmlhttp.setRequestHeader("Content-type","application/x-www-form-urlencoded");
+            xmlhttp.send("blogId="+$("#blogId").val()+"&text="+$("#test").val()+"&masterId="+userId+"&commentId="+commentId+"&commId="+commId);
+            xmlhttp.onreadystatechange=function(){
+                if (xmlhttp.readyState==4 && xmlhttp.status==200){
+                    if(xmlhttp.responseText=='ok'){
+                        layer.ready(function(){
+                            layer.msg('评论成功！');
+                        });
+                        window.setTimeout(index,2000);
+                        function index() {
+                            location.reload();
+                        }
+                    }else if(xmlhttp.responseText=='err1'){
+                        layer.ready(function(){
+                            layer.msg('回复失败，需要登陆才能评论哦！');
+                        });
+                    }else if(xmlhttp.responseText=='err2'){
+                        layer.ready(function(){
+                            layer.msg('回复失败，请填写完整评论信息！');
+                        });
+                    }else if(xmlhttp.responseText=='err3'){
+                        layer.ready(function(){
+                            layer.msg('回复失败，您已被禁言！');
+                        });
+                    }else{
+                        layer.ready(function(){
+                            layer.msg('回复失败，请联系管理员！');
+                        });
+                    }
+                }
+            }
+        });
+    };
 
-    $("#register").click(function(){
-        //利用ajax进行登录请求
-        //1、创建XMLHttpRequest 对象
+    $("#addComment").click(function(){
         var xmlhttp = new XMLHttpRequest();
-        //2、建立请求
-        xmlhttp.open("POST","${ctx}/addWeibo",true);
-        //3、发送请求
+        xmlhttp.open("POST","${ctx}/addComment",true);
         xmlhttp.setRequestHeader("Content-type","application/x-www-form-urlencoded");
-        xmlhttp.send("title="+$("#title").val()+"&text="+$("#text").val()+"&type="+$(".type").val()+"&userId="+$("#userId").val());
-        //4、处理响应
+        xmlhttp.send("blogId="+$("#blogId").val()+"&text="+$("#text").val()+"&masterId="+$("#masterId").val());
         xmlhttp.onreadystatechange=function(){
             if (xmlhttp.readyState==4 && xmlhttp.status==200){
                 if(xmlhttp.responseText=='ok'){
                     layer.ready(function(){
-                        layer.msg('发布成功！');
+                        layer.msg('评论成功！');
                     });
-                    window.setTimeout(index,3000);
+                    window.setTimeout(index,2000);
                     function index() {
-                        location.href="${ctx}/index";
+                        location.reload();
                     }
                 }else if(xmlhttp.responseText=='err1'){
                     layer.ready(function(){
-                        layer.msg('发布失败，请填写完整内容！');
+                        layer.msg('评论失败，需要登陆才能评论哦！');
                     });
                 }else if(xmlhttp.responseText=='err2'){
                     layer.ready(function(){
-                        layer.msg('发布失败，请联系管理员！');
+                        layer.msg('评论失败，请填写完整评论信息！');
+                    });
+                }else if(xmlhttp.responseText=='err3'){
+                    layer.ready(function(){
+                        layer.msg('评论失败，您已被禁言！');
                     });
                 }else{
                     layer.ready(function(){
-                        layer.msg('发布失败，请联系管理员！');
+                        layer.msg('评论失败，请联系管理员！');
                     });
                 }
             }
         }
-    })
+    });
+
 </script>
 </html>

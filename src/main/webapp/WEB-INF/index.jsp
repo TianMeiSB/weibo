@@ -11,9 +11,7 @@
 </head>
 
 <style>
-   #a1{
 
-    }
 </style>
 <body style="background-color: #EFEFEF;width: 98.5%;">
 <nav class="navbar navbar-default navbar-fixed-top"  style="background-color: #E7EAED;">
@@ -50,6 +48,9 @@
                 <button type="submit" class="btn btn-default">GO</button>
             </form>
             <ul class="nav navbar-nav navbar-right">
+                <c:if test="${empty user}">
+                    <li><a href="/login">登陆</a></li>
+                </c:if>
                 <li><a href="#">关于本站</a></li>
                 <c:if test="${not empty user}">
 
@@ -79,16 +80,9 @@
         <div class="col-sm-2">
             <div style="position: fixed;width: 15%;">
                 <div class="list-group" >
-                    <button type="button" class="list-group-item">热门</button>
-                    <button type="button" class="list-group-item">头条</button>
-                    <button type="button" class="list-group-item">新鲜事</button>
-                    <button type="button" class="list-group-item">搞笑</button>
-                    <button type="button" class="list-group-item">社会</button>
-                    <button type="button" class="list-group-item">时尚</button>
-                    <button type="button" class="list-group-item">电影</button>
-                    <button type="button" class="list-group-item">美女</button>
-                    <button type="button" class="list-group-item">体育</button>
-                    <button type="button" class="list-group-item">动漫</button>
+                    <c:forEach items="${typeList}" var="type">
+                    <button type="button" class="list-group-item <%--active--%>">${type.classification}</button>
+                    </c:forEach>
                 </div>
             </div>
         </div>
@@ -97,39 +91,49 @@
 
             <div class="layui-carousel" id="test1">
                 <div carousel-item>
-                    <div>条目1</div>
-                    <div>条目2</div>
-                    <div>条目3</div>
-                    <div>条目4</div>
-                    <div>条目5</div>
-                    <div>条目6</div>
+                    <div><img src="${ctx}/images/background/l1.jpg" alt="" style="width: 100%;height: 100%"></div>
+                    <div><img src="${ctx}/images/background/l2.jpg" alt="" style="width: 100%;height: 100%"></div>
+                    <div><img src="${ctx}/images/background/l3.jpg" alt="" style="width: 100%;height: 100%"></div>
+                    <div><img src="${ctx}/images/fengmian/1.png" alt="" style="width: 100%;height: 100%"></div>
                 </div>
             </div>
 
-            <div style="background-color: #00FF00;width: 100%;height: 100px;margin-top: 16px;border: 1px solid #F8F8F8;">
-                <div style="background-color: #0000FF;width: 20%;height: 100%;margin: 0;float: left;">
-                    <img src="#" alt="这是缩略图">
-                </div>
+            <c:forEach items="${blogList}" var="blog">
+                <div style="background-color: #00FF00;width: 100%;height: 100px;margin-top: 16px;border: 1px solid #F8F8F8;margin-bottom: 16px;">
 
-                <div style="background-color: #a96297;height:100%;width: 80%; float: left;margin: 0">
-                    <div style="background-color: #00FF00;height: 50%;width: 100%">
-                        这里是标题
-                    </div>
-                    <div style="background-color: #00F7DE;height: 50%;width: 100%">
-                        <div style="background-color: #9acfea;height: 100%;width: 50%;float: left;">
-                            <div style="background-color: #8fff5f;height: 100%;width: 15%;float: left;">头像</div>
-                            <div style="background-color: #00FFFF;height: 100%;width: 40%;float: left;">用户名</div>
-                            <div style="background-color: #2aabd2;height: 100%;width: 40%;float: left;">时间</div>
-                        </div>
-                        <div style="background-color: #df68ea;height: 100%;width: 50%;float: right;">
-                            <div style="background-color: #ffb67e;height: 100%;width: 30%;float: right;">分享</div>
-                            <div style="background-color: #00FFFF;height: 100%;width: 30%;float: right;">评论</div>
-                            <div style="background-color: #2aabd2;height: 100%;width: 30%;float: right;">点赞</div>
+                    <div style="width: 20%;height: 100%;margin: 0;float: left;">
+                        <div style="width: 96%;height: 94%;margin: 3px;">
+                            <c:set value="${blog.picture}" var="picture"/>
+                            <c:if test="${blog.titlePage!=null}">
+                                <a href="${ctx}/seeBlog?blogId=${blog.id}"><img src="${blog.titlePage}" alt="这是缩略图" style="width: 100%;height:100%;"></a>
+                            </c:if>
+                            <c:if test="${blog.titlePage==null}">
+                                <a href="${ctx}/seeBlog?blogId=${blog.id}"><img src="${picture[0].src}" alt="这是缩略图" style="width: 100%;height:100%;"></a>
+                            </c:if>
+                            <c:if test="${picture==null}">
+                                <a href="${ctx}/seeBlog?blogId=${blog.id}"><img src="${ctx}/imgaes/fengmian/1.png" alt="这是缩略图" style="width: 100%;height:100%;"></a>
+                            </c:if>
                         </div>
                     </div>
+                    <div style="background-color: #a96297;height:100%;width: 80%; float: left;margin: 0">
+                        <div style="background-color: #00FF00;height: 50%;width: 100%">
+                                ${blog.title}
+                        </div>
+                        <div style="background-color: #00F7DE;height: 50%;width: 100%">
+                            <div style="background-color: #9acfea;height: 100%;width: 50%;float: left;">
+                                <div style="background-color: #8fff5f;height: 100%;width: 15%;float: left;"><img src="${blog.user.image}" style="width: 100%;height:100%;" class="img-circle"></div>
+                                <div style="background-color: #00FFFF;height: 100%;width: 25%;float: left;">${blog.user.username}</div>
+                                <div style="background-color: #2aabd2;height: 100%;width: 60%;float: left;"><fmt:formatDate value="${blog.publishTime}" pattern="yyyy-MM-dd hh:mm:ss"/></div>
+                            </div>
+                            <div style="background-color: #df68ea;height: 100%;width: 50%;float: right;">
+                                <div style="background-color: #ffb67e;height: 100%;width: 30%;float: right;">分享</div>
+                                <div style="background-color: #00FFFF;height: 100%;width: 30%;float: right;">评论</div>
+                                <div style="background-color: #2aabd2;height: 100%;width: 30%;float: right;">点赞</div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-            </div>
-
+            </c:forEach>
         </div>
         <!-- Optional: clear the XS cols if their content doesn't match in height -->
         <div class="clearfix visible-xs-block"></div>
@@ -160,12 +164,12 @@
                     </div>
                 </div>
             </c:if>
-            <div style="border: 1px solid #FFFFFF;width: 90%;height: 430px;margin-bottom: 20px;">
-                <div style="width: 100%;height: 94%;">
-                    <div style="width: 100%;height: 9%;background-color: #F8F8F8;margin-bottom: 2%;text-align: center;">
+            <div style="border: 1px solid #FFFFFF;width: 90%;min-height: 145px;margin-bottom: 20px;">
+                <div style="width: 100%;min-height: 136px;">
+                    <div style="width: 100%;height: 36px;background-color: #F8F8F8;margin-bottom: 2%;text-align: center;">
                         <p style="font-size: 20px;">新鲜事</p>
                     </div>
-                    <div style="width: 100%;height: 21%;background-color:#F8F8F8;margin-bottom: 2%;">
+                    <div style="width: 100%;height: 84px;background-color:#F8F8F8;margin-top: 2%;">
                         <div style="background-color: #EFEFEF;width: 50%;height: 90%;float: left;margin: 4px;margin-right: 0px;">
                             <div style="width: 100%;height: 50%;">标题</div>
                             <div style="width: 100%;height: 50%;">时间</div>
@@ -175,52 +179,28 @@
                             <img src="#" alt="缩略图">
                         </div>
                     </div>
-                    <div style="width: 100%;height: 21%;background-color:#F8F8F8;margin-bottom: 2%;">
-                        <div style="background-color: #EFEFEF;width: 50%;height: 90%;float: left;margin: 4px;margin-right: 0px;">
-                            <div style="width: 100%;height: 50%;">标题</div>
-                            <div style="width: 100%;height: 50%;">时间</div>
-                        </div>
-
-                        <div style="background-color: #EFEFEF;width: 45%;height: 90%;float: right;margin: 4px;margin-left: 0px;">
-                            <img src="#" alt="缩略图">
-                        </div>
-                    </div>
-                    <div style="width: 100%;height: 21%;background-color:#F8F8F8;margin-bottom: 2%;">
-                        <div style="background-color: #EFEFEF;width: 50%;height: 90%;float: left;margin: 4px;margin-right: 0px;">
-                            <div style="width: 100%;height: 50%;">标题</div>
-                            <div style="width: 100%;height: 50%;">时间</div>
-                        </div>
-
-                        <div style="background-color: #EFEFEF;width: 45%;height: 90%;float: right;margin: 4px;margin-left: 0px;">
-                            <img src="#" alt="缩略图">
-                        </div>
-                    </div>
-                    <div style="width: 100%;height: 21%;background-color:#F8F8F8;margin-bottom: 2%;">
-                        <div style="background-color: #EFEFEF;width: 50%;height: 90%;float: left;margin: 4px;margin-right: 0px;">
-                            <div style="width: 100%;height: 50%;">标题</div>
-                            <div style="width: 100%;height: 50%;">时间</div>
-                        </div>
-
-                        <div style="background-color: #EFEFEF;width: 45%;height: 90%;float: right;margin: 4px;margin-left: 0px;">
-                            <img src="#" alt="缩略图">
-                        </div>
-                    </div>
-
                 </div>
-                <div style="width: 100%;height: 6%;text-align: center;border-top: 1px solid #FFFFFF;background-color: #F8F8F8;">
+                <div style="width: 100%;height: 24px;text-align: center;border-top: 1px solid #FFFFFF;background-color: #F8F8F8;">
                     <a href="#" style="">查看更多<span class="glyphicon glyphicon-menu-right" aria-hidden="true"></span></a>
                 </div>
             </div>
 
-            <div style="border: 1px solid #FFFFFF;width: 90%;height: 430px;margin-bottom: 20px;">
-                <div style="width: 100%;height: 9%;background-color: #F8F8F8;margin-bottom: 2%;text-align: center;">
+            <div style="border: 1px solid #FFFFFF;width: 90%;min-height: 145px;margin-bottom: 20px;">
+                <div style="width: 100%;height: 36px;background-color: #F8F8F8;margin-bottom: 2%;text-align: center;">
                     <p style="font-size: 20px;">热门文章</p>
                 </div>
+                <div style="width: 100%;height: 84px;background-color:#F8F8F8;margin-top: 2%;">
+                    <div style="background-color: #EFEFEF;width: 35%;height: 90%;float: left;margin: 4px;margin-right: 0px;">
+                        <img src="#" alt="缩略图">
+                    </div>
 
+                    <div style="background-color: #EFEFEF;width: 60%;height: 90%;float: right;margin: 4px;margin-left: 0px;">
+                        <div style="width: 100%;height: 50%;">标题</div>
+                        <div style="width: 100%;height: 50%;">时间</div>
+                    </div>
+                </div>
 
-
-
-                <div style="width: 100%;height: 6%;text-align: center;border-top: 1px solid #FFFFFF;background-color: #F8F8F8;">
+                <div style="width: 100%;height: 24px;text-align: center;border-top: 1px solid #FFFFFF;background-color: #F8F8F8;margin-top: 2%;">
                     <a href="#" style="">查看更多<span class="glyphicon glyphicon-menu-right" aria-hidden="true"></span></a>
                 </div>
             </div>
@@ -240,7 +220,7 @@
             ,width: '100%' //设置容器宽度
             ,arrow: 'always' //始终显示箭头
             //,anim: 'updown' //切换动画方式
-            ,indicator:'none'
+            // ,indicator:'none'
         });
     });
 
@@ -261,7 +241,7 @@
                     $("#errMsg").text("登录成功！");
                     window.setTimeout(index,1000);
                     function index() {
-                        location.href="${ctx}/";
+                        location.href="${ctx}/index";
                     }
                 }else if(xmlhttp.responseText=='err1'){
                     $("#errMsg").text("登录失败！用户名或密码不能为空！");
@@ -269,6 +249,8 @@
                     $("#errMsg").text("登录失败！用户名或密码错误！");
                 }else if(xmlhttp.responseText=='err3'){
                     $("#errMsg").text("用户名不存在！");
+                } else if(xmlhttp.responseText=='err4'){
+                    $("#errMsg").text("登录失败！您的账户已被封禁！");
                 }else{
                     $("#errMsg").text("登录失败！请联系管理员！");
                 }

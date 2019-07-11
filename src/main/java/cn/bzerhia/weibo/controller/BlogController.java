@@ -2,8 +2,11 @@ package cn.bzerhia.weibo.controller;
 
 import cn.bzerhia.weibo.constant.Constant;
 import cn.bzerhia.weibo.entity.Blog;
+import cn.bzerhia.weibo.entity.User;
 import cn.bzerhia.weibo.service.BlogService;
+import cn.bzerhia.weibo.service.UserService;
 import cn.bzerhia.weibo.service.impl.BlogServiceImpl;
+import cn.bzerhia.weibo.service.impl.UserServiceImpl;
 import cn.bzerhia.weibo.util.MathUtil;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -17,8 +20,10 @@ import java.util.Date;
 @Controller
 public class BlogController {
     private BlogService blogService;
+    private UserService userService;
     public BlogController() {
         blogService = new BlogServiceImpl();
+        userService = new UserServiceImpl();
     }
 
 
@@ -31,7 +36,12 @@ public class BlogController {
             return;
 
         }
-       if (text=="undefined"||text.equals("undefined")){
+        User user = userService.findById(userId);
+        if (user.getType()==2){
+            response.getWriter().write("err4");
+            return;
+        }
+        if (text=="undefined"||text.equals("undefined")){
            response.getWriter().write("err2");
            return;
        }
@@ -56,18 +66,18 @@ public class BlogController {
             response.getWriter().write("ok");
             session.removeAttribute("fengmian");
         }else{
-            response.getWriter().write("error4");
+            response.getWriter().write("err5");
         }
     }
 
     @GetMapping("seeBlog")
     public String seeBlog(Integer blogId, Model model){
         if (blogId==null){
-            return "index";
+            return "redirect:index";
         }else{
             Blog blog = blogService.findById(blogId);
             if (blog==null){
-                return "index";
+                return "redirect:index";
             }else{
                 model.addAttribute("blog",blog);
                 return "seeBlog";
