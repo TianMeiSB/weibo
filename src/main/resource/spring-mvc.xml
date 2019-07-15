@@ -1,51 +1,30 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
-	xmlns:context="http://www.springframework.org/schema/context"
-	xmlns:mvc="http://www.springframework.org/schema/mvc"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+	   xmlns:context="http://www.springframework.org/schema/context"
+	   xmlns:mvc="http://www.springframework.org/schema/mvc"
+	   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	   xsi:schemaLocation="http://www.springframework.org/schema/beans
 http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
 http://www.springframework.org/schema/context
 http://www.springframework.org/schema/context/spring-context-4.2.xsd
 http://www.springframework.org/schema/mvc
 http://www.springframework.org/schema/mvc/spring-mvc-4.0.xsd">
 
-	<!-- 全注解方式 -->
-	<!-- 配置扫描Controller的包 -->
 	<context:component-scan base-package="cn.bzerhia.weibo.controller" />
 
-    <!-- 启用MVC注解 -->
-    <mvc:annotation-driven/>
-    
-    <!-- 静态资源不拦截 -->
-    <mvc:resources mapping="/static/**" location="/static/" />
-	<mvc:interceptors>
-		<!--国际化-->
-		<bean class="org.springframework.web.servlet.i18n.LocaleChangeInterceptor">
-			<property name="paramName" value="lang"/>
-		</bean>
-		<mvc:interceptor>
-			<mvc:mapping path="/admin/**"/><!--拦截的url-->
-			<mvc:mapping path="/admin/"/><!--拦截的url-->
-			<mvc:mapping path="/admin"/><!--拦截的url-->
-			<mvc:mapping path="/user/**"/><!--拦截的url-->
-			<mvc:mapping path="/user/"/><!--拦截的url-->
-			<mvc:mapping path="/user"/><!--拦截的url-->
-			<bean class="cn.bzerhia.weibo.intercetor.LoginIntercetor" />
-		</mvc:interceptor>
+	<mvc:annotation-driven/>
 
-	</mvc:interceptors>
-	<!-- 视图解析器 -->
+	<mvc:resources mapping="/static/**" location="/static/"/>
+
 	<bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
-         <property name="viewClass" value="org.springframework.web.servlet.view.JstlView" />
-         <!-- jsp页面放到WEB-INF目录下 -->
-         <property name="prefix" value="/WEB-INF/" />
-         <!-- 页面的后缀为jsp -->
-         <property name="suffix" value=".jsp" />
-    </bean>
+		<property name="viewClass" value="org.springframework.web.servlet.view.JstlView" />
+		<property name="prefix" value="/WEB-INF/" />
+		<property name="suffix" value=".jsp" />
+	</bean>
 
 	<bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
 		<property name="maxUploadSize" value="20000000"/>
 		<property name="defaultEncoding" value="utf-8"></property>
 	</bean>
+
 </beans>

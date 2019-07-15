@@ -3,7 +3,7 @@
 <%@ include file="/common/taglib.jsp" %>
 <html>
 <head>
-    <title>发表博客</title>
+    <title>查看帖子</title>
     <link href="${ctx}/static/bootstrap-3.3.7-dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="${ctx}/static/font-awesome-4.7.0/css/font-awesome.min.css" rel="stylesheet">
     <link rel="stylesheet" href="${ctx}/static/layui/css/layui.css">
@@ -23,12 +23,12 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-            <a class="navbar-brand" href="#">帅鹏博客</a>
+            <a class="navbar-brand" href="/index">帅鹏博客</a>
         </div>
         <!-- Collect the nav links, forms, and other content for toggling -->
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
             <ul class="nav navbar-nav">
-                <li class="active"><a href="#">首页 <span class="sr-only">(current)</span></a></li>
+                <li class="active"><a href="/index">首页 <span class="sr-only">(current)</span></a></li>
                 <c:if test="${not empty user}">
                     <li class="dropdown">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">发表内容<span class="caret"></span></a>
@@ -57,13 +57,20 @@
                            aria-expanded="false" style="padding-bottom: 0px;padding-left: 0px;padding-top: 10px;">
                             <img src="${user.image}" alt="头像" class="img-circle"  style="width: 30px;height: 30px;">
                                 ${user.username}<span class="caret"></span>
+                            <c:if test="${comments.size()!=0||comments2.size()!=0}">
+                                <span class="layui-badge-dot"></span>
+                            </c:if>
                         </a>
                         <ul class="dropdown-menu">
                             <c:if test="${user.type==1}">
                                 <li><a href="/backstage">后台管理</a></li>
                             </c:if>
                             <li><a href="/user/myIndex">我的主页</a></li>
-                            <li><a href="#">我的消息</a></li>
+                            <li><a href="/user/seeComment">
+                                我的消息
+                                <c:if test="${comments.size()!=0||comments2.size()!=0}">
+                                    <span class="layui-badge">${comments.size()+comments2.size()}
+                                    </span></c:if></a></li>
                             <li role="separator" class="divider"></li>
                             <li><a href="/logout">退出登录</a></li>
                         </ul>
@@ -90,8 +97,13 @@
                         <li class="dropdown" style="float: left">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">操作<span class="caret"></span></a>
                             <ul class="dropdown-menu">
-                                <li><a href="#">修改</a></li>
-                                <li><a href="#">删除</a></li>
+                                <c:if test="${user.id==blog.user.id||user.type==1}">
+                                    <li><a href="/updateblog?blogId=${blog.id}">编辑</a></li>
+                                    <li><a href="javascript:;" data-userid="${user.id}" data-blogid="${blog.id}" onclick="deleteBlog(this);">删除</a></li>
+                                </c:if>
+                                <c:if test="${user.id!=blog.user.id}">
+                                    <li><a href="#">举报</a></li>
+                                </c:if>
                             </ul>
                         </li>
                     </div>
@@ -115,11 +127,25 @@
             </div>
         </div>
         <div style="width: 100%;height: 45px;">
-            <div style="width: 25%;height: 100%;float: left;text-align: center;border: 1px solid #DDDDDD;border-right: none;background-color: #F8F8F8"><div style="margin-top: 7%;"><a href="#" style="text-decoration:none"><i class="layui-icon layui-icon-rate"></i> 收藏</a></div></div>
+            <div style="width: 25%;height: 100%;float: left;text-align: center;border: 1px solid #DDDDDD;border-right: none;background-color: #F8F8F8"><div style="margin-top: 7%;"><a href="javascript:;" style="text-decoration:none;" data-userid="${user.id}" data-blogid="${blog.id}" onclick="shoucang(this);">
+                <c:if test="${collect!=null}">
+                    <p style="color: #28a4c9;"><i class="layui-icon layui-icon-rate"></i> 已收藏</p>
+                </c:if>
+                <c:if test="${collect==null}">
+                    <p><i class="layui-icon layui-icon-rate"></i> 收藏</p>
+                </c:if>
+            </a></div></div>
             <div style="width: 25%;height: 100%;float: left;text-align: center;border: 1px solid #DDDDDD;border-right: none;background-color: #F8F8F8"><div style="margin-top: 7%;"><a href="#" style="text-decoration:none"><i class="layui-icon layui-icon-share"></i> 分享</a></div></div>
             <c:set value="${blog.comment}" var="comm"/>
             <div style="width: 25%;height: 100%;float: left;text-align: center;border: 1px solid #DDDDDD;border-right: none;background-color: #F8F8F8"><div style="margin-top: 7%;"><a href="#" style="text-decoration:none"><i class="layui-icon layui-icon-dialogue"></i> 评论</a></div></div>
-            <div style="width: 25%;height: 100%;float: left;text-align: center;border: 1px solid #DDDDDD;background-color: #F8F8F8"><div style="margin-top: 7%;"><a href="#" style="text-decoration:none"><i class="layui-icon layui-icon-praise"></i> 点赞</a></div></div>
+            <div style="width: 25%;height: 100%;float: left;text-align: center;border: 1px solid #DDDDDD;background-color: #F8F8F8"><div style="margin-top: 7%;"><a href="javascript:;" style="text-decoration:none" data-userid="${user.id}" data-blogid="${blog.id}" onclick="dianzan(this);">
+                <c:if test="${like==null}">
+                    <p><i class="layui-icon layui-icon-praise"></i> 点赞</p>
+                </c:if>
+                <c:if test="${like!=null}">
+                    <p style="color: #28a4c9;"><i class="layui-icon layui-icon-praise"></i> ${likeList.size()}</p>
+                </c:if>
+            </a></div></div>
         </div>
     </div>
     <div style="width: 100%;min-height: 100%;float: left;background-color: #D3E2EE">
@@ -159,6 +185,10 @@
                         </div>
                         <div style="width: 48%;float: left">
                             <div style="float: right">
+                                <c:if test="${user.id==comment.user1.id||user.type==1}">
+                                    <a href="javascript:;" style="color: #985f0d" data-userid="${user.id}" data-commentid="${comment.id}" onclick="shanchu(this);">删除</a>
+                                    &nbsp;
+                                </c:if>
                             <a href="javascript:;"  style="color: #985f0d" data-name="${comment.id}" class="demo" onclick="dianji(this)" data-userid="${comment.user1.id}" data-commentid="${comment.id}">回复</a>
                             &nbsp;
                             <a href="#" style="color: #985f0d">举报</a>
@@ -175,7 +205,7 @@
                         <div style="width: 80%;min-height: 50px;word-wrap:break-word;background-color: #FFFFFF;margin-left: 58px;margin-top: 1px;">
                                 <div style="width: 100%;min-height: 50px;">
                                     <div style="width: 100%;min-height: 25px;margin: auto;word-wrap:break-word;">
-                                        <a href="/Index?userId=${comment2.user1.id}" style="color: #EB7350;">${comment2.user1.username}</a>回复：${comment2.text}
+                                        <a href="${ctx}/Index?userId=${comment2.user1.id}" style="color: #EB7350;">${comment2.user1.username}</a>回复：${comment2.text}
                                     </div>
                                     <div style="width: 100%;height: 24px;margin: auto;border-bottom: 1px solid #DDDDDD">
                                         <div style="width: 50%;height: 100%;float: left;color: deepskyblue">
@@ -183,6 +213,10 @@
                                         </div>
                                         <div style="width: 50%;float: right">
                                             <div style="float: right">
+                                                <c:if test="${user.id==comment2.user1.id||user.type==1}">
+                                                    <a href="javascript:;" style="color: #985f0d" data-userid="${user.id}" data-commentid="${comment2.id}" onclick="shanchu2(this);">删除</a>
+                                                    &nbsp;
+                                                </c:if>
                                                 <a href="javascript:;" style="color: #985f0d" data-name="${comment2.id}" class="demo" onclick="dianji(this)" data-userid="${comment2.user1.id}" data-commentid="${comment.id}" data-commid="${comment2.id}">回复</a>
                                                 &nbsp;
                                                 <a href="#"style="color: #985f0d">举报</a>
@@ -215,13 +249,6 @@
             ,layedit = layui.layedit
             ,laydate = layui.laydate;
 
-        //日期
-        laydate.render({
-            elem: '#date'
-        });
-        laydate.render({
-            elem: '#date1'
-        });
         //创建一个编辑器
         var editIndex = layedit.build('LAY_demo_editor');
     });
@@ -230,6 +257,9 @@
             photos: '.layer-photos-demo'
             , anim: 2 //0-6的选择，指定弹出图片动画类型，默认随机（请注意，3.0之前的版本用shift参数）
         });
+    });
+    layui.use('layer',function () {
+        var layer = layui.layer;
     });
     var commentId,userId;
     function dianji(obj) {
@@ -282,7 +312,88 @@
             }
         });
     };
-
+    function shoucang(obj){
+        var userId = obj.dataset.userid;
+        var blogId = obj.dataset.blogid;
+        var xmlhttp = new XMLHttpRequest();
+        xmlhttp.open("POST","${ctx}/addCollection",true);
+        xmlhttp.setRequestHeader("Content-type","application/x-www-form-urlencoded");
+        xmlhttp.send("blogId="+blogId+"&userId="+userId);
+        xmlhttp.onreadystatechange=function(){
+            if (xmlhttp.readyState==4 && xmlhttp.status==200){
+                if(xmlhttp.responseText=='ok1'){
+                    layer.ready(function(){
+                        layer.msg('收藏成功！');
+                    });
+                    window.setTimeout(index,2000);
+                    function index() {
+                        location.reload();
+                    }
+                }else if(xmlhttp.responseText=='err'){
+                    layer.ready(function(){
+                        layer.msg('收藏失败，需要登陆才能收藏哦！');
+                    });
+                }else if(xmlhttp.responseText=='ok2'){
+                    layer.ready(function(){
+                        layer.msg('取消收藏成功！');
+                    });
+                    window.setTimeout(index,2000);
+                    function index() {
+                        location.reload();
+                    }
+                }else if(xmlhttp.responseText=='err1'){
+                    layer.ready(function(){
+                        layer.msg('收藏失败');
+                    });
+                }else if(xmlhttp.responseText=='err2'){
+                    layer.ready(function(){
+                        layer.msg('取消收藏失败');
+                    });
+                }
+            }
+        }
+    }
+    function dianzan(obj){
+        var userId = obj.dataset.userid;
+        var blogId = obj.dataset.blogid;
+        var xmlhttp = new XMLHttpRequest();
+        xmlhttp.open("POST","${ctx}/addLike",true);
+        xmlhttp.setRequestHeader("Content-type","application/x-www-form-urlencoded");
+        xmlhttp.send("blogId="+blogId+"&userId="+userId);
+        xmlhttp.onreadystatechange=function(){
+            if (xmlhttp.readyState==4 && xmlhttp.status==200){
+                if(xmlhttp.responseText=='ok1'){
+                    layer.ready(function(){
+                        layer.msg('点赞成功！');
+                    });
+                    window.setTimeout(index,2000);
+                    function index() {
+                        location.reload();
+                    }
+                }else if(xmlhttp.responseText=='err'){
+                    layer.ready(function(){
+                        layer.msg('点赞失败，需要登陆才能点赞哦！');
+                    });
+                }else if(xmlhttp.responseText=='ok2'){
+                    layer.ready(function(){
+                        layer.msg('取消点赞成功！');
+                    });
+                    window.setTimeout(index,2000);
+                    function index() {
+                        location.reload();
+                    }
+                }else if(xmlhttp.responseText=='err1'){
+                    layer.ready(function(){
+                        layer.msg('点赞失败');
+                    });
+                }else if(xmlhttp.responseText=='err2'){
+                    layer.ready(function(){
+                        layer.msg('取消点赞失败');
+                    });
+                }
+            }
+        }
+    }
     $("#addComment").click(function(){
         var xmlhttp = new XMLHttpRequest();
         xmlhttp.open("POST","${ctx}/addComment",true);
@@ -318,6 +429,81 @@
             }
         }
     });
+    function shanchu(obj) {
+        var userId = obj.dataset.userid;
+        var commentId = obj.dataset.commentid;
+        var xmlhttp = new XMLHttpRequest();
+        xmlhttp.open("POST","${ctx}/deleteComment",true);
+        xmlhttp.setRequestHeader("Content-type","application/x-www-form-urlencoded");
+        xmlhttp.send("userId="+userId+"&commentId="+commentId);
+        xmlhttp.onreadystatechange=function(){
+            if (xmlhttp.readyState==4 && xmlhttp.status==200){
+                if(xmlhttp.responseText=='ok'){
+                    layer.ready(function(){
+                        layer.msg('已删除！');
+                    });
+                    window.setTimeout(index,2000);
+                    function index() {
+                        location.reload();
+                    }
+                }else if(xmlhttp.responseText=='err'){
+                    layer.ready(function(){
+                        layer.msg('删除失败！');
+                    });
+                }
+            }
+        }
+    }
+    function shanchu2(obj) {
+        var userId = obj.dataset.userid;
+        var commentId = obj.dataset.commentid;
+        var xmlhttp = new XMLHttpRequest();
+        xmlhttp.open("POST","${ctx}/deleteComment2",true);
+        xmlhttp.setRequestHeader("Content-type","application/x-www-form-urlencoded");
+        xmlhttp.send("userId="+userId+"&commentId="+commentId);
+        xmlhttp.onreadystatechange=function(){
+            if (xmlhttp.readyState==4 && xmlhttp.status==200){
+                if(xmlhttp.responseText=='ok'){
+                    layer.ready(function(){
+                        layer.msg('已删除！');
+                    });
+                    window.setTimeout(index,2000);
+                    function index() {
+                        location.reload();
+                    }
+                }else if(xmlhttp.responseText=='err'){
+                    layer.ready(function(){
+                        layer.msg('删除失败！');
+                    });
+                }
+            }
+        }
+    }
 
+    function deleteBlog(obj) {
+        var userId = obj.dataset.userid;
+        var blogId = obj.dataset.blogid;
+        var xmlhttp = new XMLHttpRequest();
+        xmlhttp.open("POST","${ctx}/deleteBlog",true);
+        xmlhttp.setRequestHeader("Content-type","application/x-www-form-urlencoded");
+        xmlhttp.send("userId="+userId+"&blogId="+blogId);
+        xmlhttp.onreadystatechange=function(){
+            if (xmlhttp.readyState==4 && xmlhttp.status==200){
+                if(xmlhttp.responseText=='ok'){
+                    layer.ready(function(){
+                        layer.msg('已删除！');
+                    });
+                    window.setTimeout(index,2000);
+                    function index() {
+                        location.reload();
+                    }
+                }else if(xmlhttp.responseText=='err'){
+                    layer.ready(function(){
+                        layer.msg('删除失败！');
+                    });
+                }
+            }
+        }
+    }
 </script>
 </html>

@@ -4,7 +4,7 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>后台首页</title>
     <link href="${ctx}/static/bootstrap-3.3.7-dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="${ctx}/static/font-awesome-4.7.0/css/font-awesome.min.css" rel="stylesheet">
     <link rel="stylesheet" href="${ctx}/static/layui/css/layui.css">
@@ -22,11 +22,11 @@
                     ${user.username}
                 </a>
                 <dl class="layui-nav-child">
-                    <dd><a href="">基本资料</a></dd>
-                    <dd><a href="">安全设置</a></dd>
+                    <dd><a href="${ctx}/">前往首页</a></dd>
+                    <dd><a href="${ctx}/user/myIndex">我的首页</a></dd>
                 </dl>
             </li>
-            <li class="layui-nav-item"><a href="/logout">退了</a></li>
+            <li class="layui-nav-item"><a href="${ctx}/logout">退了</a></li>
         </ul>
     </div>
 
@@ -37,15 +37,16 @@
                 <li class="layui-nav-item layui-nav-itemed">
                     <a class="" href="javascript:;">用户管理</a>
                     <dl class="layui-nav-child">
-                        <dd><a href="/findAllUser">用户列表</a></dd>
+                        <dd><a href="/admin/findAllUser">用户列表</a></dd>
                     </dl>
                 </li>
                 <li class="layui-nav-item">
                     <a href="javascript:;">帖子管理</a>
                     <dl class="layui-nav-child">
-                        <dd><a href="javascript:;">帖子列表</a></dd>
-                        <dd><a href="javascript:;">图片管理</a></dd>
-                        <dd><a href="javascript:;">回复列表</a></dd>
+                        <dd><a href="/admin/findAllBlog">帖子列表</a></dd>
+                        <dd><a href="/admin/findAllPicture">图片管理</a></dd>
+                        <dd><a href="j/admin/findAllComment">回复列表</a></dd>
+                        <dd><a href="/admin/findAllComment2">回复列表</a></dd>
                     </dl>
                 </li>
 
@@ -54,39 +55,18 @@
     </div>
 
     <div class="layui-body">
-        <c:if test="${userList!=null}">
-        <table class="table table-bordered">
-            <tr><th>头像</th><th>ID</th><th>用户名</th><th>状态</th><th>性别</th><th>手机号</th><th>地址</th><th>注册时间</th><th>个性签名</th><th>操作</th></tr>
-            <c:forEach items="${userList}" var="user">
-            <tr><td><img src="${user.image}" style="width: 40px;height: 40px;"></td>
-                <td>${user.id}</td>
-                <td>${user.username}</td>
-                <td>
-                    <c:if test="${user.type==0}">正常</c:if>
-                    <c:if test="${user.type==2}">禁言中</c:if>
-                    <c:if test="${user.type==3}">已封号</c:if>
-                </td>
-                <td>${user.sex}</td>
-                <td>${user.phone}</td>
-                <td>${user.address}</td>
-                <td><fmt:formatDate value="${user.registerTime}" pattern="yyyy-MM-dd hh:mm:ss"/></td>
-                <td>${user.introduce}</td>
-                <td>
-                    <c:if test="${user.type==2}"><button name="${user.id}" type="button" class="layui-btn layui-btn-xs layui-btn-warm" onclick="jiechu(userId=this.name);" >解禁</button></c:if>
-                    <c:if test="${user.type!=2}"><button name="${user.id}" type="button" class="layui-btn layui-btn-xs layui-btn-warm" onclick="jinyan(userId=this.name);" >禁言</button></c:if>
-                    <c:if test="${user.type==3}"><button name="${user.id}" type="button" class="layui-btn layui-btn-xs layui-btn-normal" style="margin-left: 0px;" onclick="jiechu(userId=this.name);">解封</button><br></c:if>
-                    <c:if test="${user.type!=3}"><button name="${user.id}" type="button" class="layui-btn layui-btn-xs layui-btn-normal" style="margin-left: 0px;" onclick="fenghao(userId=this.name);">封号</button><br></c:if>
-                    <a href="javascript:;" type="button" class="layui-btn layui-btn-xs" style="margin-left: 0px;margin-top: 2px">修改</a>
-                </td>
-            </tr>
-            </c:forEach>
-        </table>
-        </c:if>
+        <div style="overflow: auto; height: 500px;width: 100%">
+            <ol class="breadcrumb">
+                <li><a href="${ctx}/admin">主页</a></li>
+            </ol>
+            <h1>帅鹏博客后台管理首页</h1>
+            <h3>欢迎登录后台管理系统！</h3>
+        </div>
     </div>
 
     <div class="layui-footer">
         <!-- 底部固定区域 -->
-        © layui.com - 底部固定区域
+        © bzerhia.cn
     </div>
 </div>
 
@@ -103,75 +83,5 @@
     layui.use('layer',function () {
         var layer = layui.layer;
     })
-    function jinyan(userId) {
-        var xmlhttp = new XMLHttpRequest();
-        xmlhttp.open("POST","${ctx}/updateType",true);
-        xmlhttp.setRequestHeader("Content-type","application/x-www-form-urlencoded");
-        xmlhttp.send("type="+2+"&userId="+userId);
-        xmlhttp.onreadystatechange=function(){
-            if (xmlhttp.readyState==4 && xmlhttp.status==200){
-                if(xmlhttp.responseText=='ok'){
-                    layer.ready(function(){
-                        layer.msg('已禁言！');
-                    });
-                    window.setTimeout(index,2000);
-                    function index() {
-                        location.reload();
-                    }
-                }else if(xmlhttp.responseText=='error'){
-                    layer.ready(function(){
-                        layer.msg('禁言失败！');
-                    });
-                }
-            }
-        }
-    }
-    function fenghao(userId) {
-        var xmlhttp = new XMLHttpRequest();
-        xmlhttp.open("POST","${ctx}/updateType",true);
-        xmlhttp.setRequestHeader("Content-type","application/x-www-form-urlencoded");
-        xmlhttp.send("type="+3+"&userId="+userId);
-        xmlhttp.onreadystatechange=function(){
-            if (xmlhttp.readyState==4 && xmlhttp.status==200){
-                if(xmlhttp.responseText=='ok'){
-                    layer.ready(function(){
-                        layer.msg('已封号！');
-                    });
-                    window.setTimeout(index,2000);
-                    function index() {
-                        location.reload();
-                    }
-                }else if(xmlhttp.responseText=='error'){
-                    layer.ready(function(){
-                        layer.msg('封号失败！');
-                    });
-                }
-            }
-        }
-    }
-    
-    function jiechu(userId) {
-        var xmlhttp = new XMLHttpRequest();
-        xmlhttp.open("POST","${ctx}/updateType",true);
-        xmlhttp.setRequestHeader("Content-type","application/x-www-form-urlencoded");
-        xmlhttp.send("type="+0+"&userId="+userId);
-        xmlhttp.onreadystatechange=function(){
-            if (xmlhttp.readyState==4 && xmlhttp.status==200){
-                if(xmlhttp.responseText=='ok'){
-                    layer.ready(function(){
-                        layer.msg('已成功解除处罚');
-                    });
-                    window.setTimeout(index,2000);
-                    function index() {
-                        location.reload();
-                    }
-                }else if(xmlhttp.responseText=='error'){
-                    layer.ready(function(){
-                        layer.msg('解除失败');
-                    });
-                }
-            }
-        }
-    }
 </script>
 </html>

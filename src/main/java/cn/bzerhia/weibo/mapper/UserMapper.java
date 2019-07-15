@@ -9,12 +9,12 @@ import java.util.List;
 
 @Repository
 public interface UserMapper extends BaseMapper<User> {
-    User findByUsername(String username);
-    int addUser(User user);
-    int updatePasswd(@Param("password") String passwd, @Param("userId")Integer userId);
-    void updateTX(@Param("src")String image,@Param("userId")Integer userId);
-    int updateUser(User user);
-    User findById(Integer userId);
+    User findByUsername(String paramString);
+    int addUser(User paramUser);
+    int updatePasswd(@Param("password") String paramString, @Param("userId") Integer paramInteger);
+    void updateTX(@Param("src") String paramString, @Param("userId") Integer paramInteger);
+    int updateUser(User paramUser);
+    User findById(Integer paramInteger);
     List<User> findAll();
-    int updateType(@Param("type")Integer type,@Param("userId")Integer userId);
+    int updateType(@Param("type") Integer paramInteger1, @Param("userId") Integer paramInteger2);
 }

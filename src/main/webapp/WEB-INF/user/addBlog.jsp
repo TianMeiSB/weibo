@@ -21,12 +21,12 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-            <a class="navbar-brand" href="#">帅鹏博客</a>
+            <a class="navbar-brand" href="/index">帅鹏博客</a>
         </div>
         <!-- Collect the nav links, forms, and other content for toggling -->
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
             <ul class="nav navbar-nav">
-                <li class="active"><a href="#">首页 <span class="sr-only">(current)</span></a></li>
+                <li class="active"><a href="/index">首页 <span class="sr-only">(current)</span></a></li>
                 <c:if test="${not empty user}">
                     <li class="dropdown">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">发表内容<span class="caret"></span></a>
@@ -55,13 +55,20 @@
                            aria-expanded="false" style="padding-bottom: 0px;padding-left: 0px;padding-top: 10px;">
                             <img src="${user.image}" alt="头像" class="img-circle"  style="width: 30px;height: 30px;">
                                 ${user.username}<span class="caret"></span>
+                            <c:if test="${comments.size()!=0||comments2.size()!=0}">
+                                <span class="layui-badge-dot"></span>
+                            </c:if>
                         </a>
                         <ul class="dropdown-menu">
                             <c:if test="${user.type==1}">
                                 <li><a href="/backstage">后台管理</a></li>
                             </c:if>
                             <li><a href="/user/myIndex">我的主页</a></li>
-                            <li><a href="#">我的消息</a></li>
+                            <li><a href="/user/seeComment">
+                                我的消息
+                                <c:if test="${comments.size()!=0||comments2.size()!=0}">
+                                    <span class="layui-badge">${comments.size()+comments2.size()}
+                                    </span></c:if></a></li>
                             <li role="separator" class="divider"></li>
                             <li><a href="/logout">退出登录</a></li>
                         </ul>
@@ -72,12 +79,12 @@
     </div><!-- /.container-fluid -->
 </nav>
 
-<div style="width: 60%;height:91%;background-color: #F8F8F8;margin: auto;margin-top: 4%;">
+<div style="width: 810px;height:620px;background-color: #F8F8F8;margin: auto;margin-top: 4%;">
     <form class="layui-form" action="#<%--register--%>" method="post" lay-filter="example" style="margin-top: 30px;" enctype="multipart/form-data">
         <input type="hidden" value="${user.id}" id="userId"/>
         <div class="layui-form-item">
             <label class="layui-form-label">标题</label>
-            <div class="layui-input-block">
+            <div class="layui-input-block" id="type">
                 <input type="text" name="title" required  lay-verify="required" placeholder="请输入标题" autocomplete="off" class="layui-input" style="width: 50%" id="title" maxlength="30">
             </div>
         </div>
@@ -89,11 +96,12 @@
                 <p id="demoText"></p>
             </div>
         </div>
+
         <div class="layui-form-item" >
             <label class="layui-form-label">类型</label>
             <div class="layui-input-block">
                 <c:forEach items="${typeList}" var="list">
-                    <input type="radio" name="type" value="${list.id}" title="${list.classification}" <c:if test="${list.id==3}">checked=""</c:if> class="type">
+                    <input type="radio" name="type" value="${list.id}" <c:if test="${list.id==3}">checked=""</c:if> <c:if test="${list.id==1||list.id==2}">disabled=""</c:if> title="${list.classification}">
                 </c:forEach>
             </div>
         </div>
@@ -120,16 +128,9 @@
             ,layer = layui.layer
             ,layedit = layui.layedit
             ,laydate = layui.laydate;
-
-        //日期
-        laydate.render({
-            elem: '#date'
-        });
-        laydate.render({
-            elem: '#date1'
-        });
         //创建一个编辑器
         var editIndex = layedit.build('LAY_demo_editor');
+
     });
     layui.use('layedit', function(){
         var layedit = layui.layedit;
@@ -186,15 +187,15 @@
         });
     });
 
+
     $("#addBlog").click(function(){
-        //利用ajax进行登录请求
-        //1、创建XMLHttpRequest 对象
+
         var xmlhttp = new XMLHttpRequest();
         //2、建立请求
         xmlhttp.open("POST","${ctx}/addBlog",true);
         //3、发送请求
         xmlhttp.setRequestHeader("Content-type","application/x-www-form-urlencoded");
-        xmlhttp.send("title="+$("#title").val()+"&text="+text+"&type="+$(".type").val()+"&userId="+$("#userId").val());
+        xmlhttp.send("title="+$("#title").val()+"&text="+text+"&userId="+$("#userId").val()+"&type="+$("input[type='radio']:checked").val());
         //4、处理响应
         xmlhttp.onreadystatechange=function(){
             if (xmlhttp.readyState==4 && xmlhttp.status==200){

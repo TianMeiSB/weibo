@@ -4,7 +4,7 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>更新相册</title>
     <link href="${ctx}/static/bootstrap-3.3.7-dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="${ctx}/static/font-awesome-4.7.0/css/font-awesome.min.css" rel="stylesheet">
     <link rel="stylesheet" href="${ctx}/static/layui/css/layui.css">
@@ -25,12 +25,12 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand" href="#" style="text-decoration:none">帅鹏博客</a>
+                <a class="navbar-brand" href="/index" style="text-decoration:none">帅鹏博客</a>
             </div>
             <!-- Collect the nav links, forms, and other content for toggling -->
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                 <ul class="nav navbar-nav">
-                    <li class="active"><a href="#" style="text-decoration:none">首页 <span class="sr-only">(current)</span></a></li>
+                    <li class="active"><a href="/index" style="text-decoration:none">首页 <span class="sr-only">(current)</span></a></li>
                     <c:if test="${not empty user}">
                         <li class="dropdown">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">发表内容<span class="caret"></span></a>
@@ -59,13 +59,20 @@
                                aria-expanded="false" style="padding-bottom: 0px;padding-left: 0px;padding-top: 10px;">
                                 <img src="${user.image}" alt="头像" class="img-circle"  style="width: 30px;height: 30px;">
                                     ${user.username}<span class="caret"></span>
+                                <c:if test="${comments.size()!=0||comments2.size()!=0}">
+                                    <span class="layui-badge-dot"></span>
+                                </c:if>
                             </a>
                             <ul class="dropdown-menu">
                                 <c:if test="${user.type==1}">
                                     <li><a href="/backstage">后台管理</a></li>
                                 </c:if>
                                 <li><a href="/user/myIndex">我的主页</a></li>
-                                <li><a href="#">我的消息</a></li>
+                                <li><a href="/user/seeComment">
+                                    我的消息
+                                    <c:if test="${comments.size()!=0||comments2.size()!=0}">
+                                    <span class="layui-badge">${comments.size()+comments2.size()}
+                                    </span></c:if></a></li>
                                 <li role="separator" class="divider"></li>
                                 <li><a href="/logout">退出登录</a></li>
                             </ul>
@@ -119,9 +126,14 @@
                         <c:forEach items="${blogList}" var="list">
                             <c:set value="${list.picture}" var="picture"/>
                             <c:forEach items="${picture}" var="picture2">
-                            <tr><td><img src="${picture2.src}" style="width: 50px;height: 50px;"></td><td>${picture2.id}</td><td>${picture2.src}</td>
+                            <tr>
+                                <td><img src="${picture2.src}" style="width: 50px;height: 50px;"></td>
+                                <td>${picture2.id}</td>
+                                <td>${picture2.src}</td>
                                 <td>${list.title}</td>
-                                <td><a type="button" class="btn btn-default btn-xs" href="#">删除</a></td></tr>
+                                <td><a type="button" class="btn btn-default btn-xs" href="javascript:;" data-userid="${user.id}" data-pictureid="${picture2.id}" onclick="shanchu(this);">删除</a>
+                                </td>
+                            </tr>
                             </c:forEach>
                         </c:forEach>
                     </table>
@@ -159,5 +171,33 @@
         });
         flow.lazyimg();
     });
+    layui.use('layer',function () {
+        var layer = layui.layer;
+    });
+    function shanchu(obj) {
+        var userId = obj.dataset.userid;
+        var pictureId = obj.dataset.pictureid;
+        var xmlhttp = new XMLHttpRequest();
+        xmlhttp.open("POST","${ctx}/deletePicture",true);
+        xmlhttp.setRequestHeader("Content-type","application/x-www-form-urlencoded");
+        xmlhttp.send("userId="+userId+"&pictureId="+pictureId);
+        xmlhttp.onreadystatechange=function(){
+            if (xmlhttp.readyState==4 && xmlhttp.status==200){
+                if(xmlhttp.responseText=='ok'){
+                    layer.ready(function(){
+                        layer.msg('已删除！');
+                    });
+                    window.setTimeout(index,2000);
+                    function index() {
+                        location.reload();
+                    }
+                }else if(xmlhttp.responseText=='err'){
+                    layer.ready(function(){
+                        layer.msg('删除失败！');
+                    });
+                }
+            }
+        }
+    }
 </script>
 </html>

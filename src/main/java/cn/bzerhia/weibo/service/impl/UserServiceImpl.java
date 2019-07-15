@@ -10,77 +10,77 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
-public class UserServiceImpl implements UserService {
+public class UserServiceImpl
+        implements UserService {
     private MyBatisUtil myBatisUtil;
-    private UserMapper userMapper;
-    private SqlSession session;
-    public void init(){
-        session = MyBatisUtil.getSession();
-        userMapper = session.getMapper(UserMapper.class);
-    }
-    public void close(){
-        session.commit();
-        session.close();
+
+    public void init() {
+        this.session = MyBatisUtil.getSession();
+        this.userMapper = (UserMapper)this.session.getMapper(UserMapper.class);
+    } private UserMapper userMapper; private SqlSession session;
+    public void close() {
+        this.session.commit();
+        this.session.close();
     }
 
-    @Override
+
     public User findByUsername(String username) {
         init();
-        User user = userMapper.findByUsername(username);
+        User user = this.userMapper.findByUsername(username);
         close();
         return user;
     }
 
-    @Override
+
     public int addUser(User user) {
         init();
-        int row = userMapper.addUser(user);
+        int row = this.userMapper.addUser(user);
         close();
         return row;
     }
 
-    @Override
-    public int updatePasswd(String passwd,Integer userId) {
+
+    public int updatePasswd(String passwd, Integer userId) {
         init();
-        int row = userMapper.updatePasswd(passwd,userId);
+        int row = this.userMapper.updatePasswd(passwd, userId);
         close();
         return row;
     }
 
-    @Override
+
     public void updateTX(String src, Integer userId) {
         init();
-        userMapper.updateTX(src,userId);
+        this.userMapper.updateTX(src, userId);
         close();
     }
 
-    @Override
+
     public int updateUser(User user) {
         init();
-        int row = userMapper.updateUser(user);
+        int row = this.userMapper.updateUser(user);
         close();
         return row;
     }
 
-    @Override
+
     public User findById(Integer userId) {
         init();
-        User user = userMapper.findById(userId);
-        return user;
+        return this.userMapper.findById(userId);
     }
 
-    @Override
+
+
     public List<User> findAll() {
         init();
-        List<User> all = userMapper.findAll();
+        List<User> all = this.userMapper.findAll();
         close();
         return all;
     }
 
-    @Override
+
     public int updateType(Integer type, Integer userId) {
         init();
-        int row = userMapper.updateType(type, userId);
+        int row = this.userMapper.updateType(type, userId);
         close();
         return row;
     }

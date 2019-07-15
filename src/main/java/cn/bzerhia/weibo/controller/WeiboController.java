@@ -19,28 +19,27 @@ import java.io.IOException;
 import java.util.Date;
 import java.util.List;
 
-@Controller
-public class WeiboController {
-    private BlogService blogService;
-    private PictureService pictureService;
-    private UserService userService;
-    public WeiboController() {
-        blogService = new BlogServiceImpl();
-        pictureService = new PictureServiceImpl();
-        userService = new UserServiceImpl();
-    }
 
-    @PostMapping("addWeibo")
-    public void addWeibo(String title, String text, Integer type, Integer userId, HttpServletResponse response, HttpSession session)
-            throws IOException {
-        if(title==null||title.equals("")||
-                text==null||text.equals("")||
-                type==null||userId==null){
+
+@Controller
+public class WeiboController
+{
+    private BlogService blogService = new BlogServiceImpl();
+    private PictureService pictureService = new PictureServiceImpl();
+    private UserService userService = new UserServiceImpl();
+
+
+
+    @PostMapping({"addWeibo"})
+    public void addWeibo(String title, String text, Integer type, Integer userId, HttpServletResponse response, HttpSession session) throws IOException {
+        if (title == null || title.equals("") || text == null || text
+                .equals("") || type == null || userId == null) {
+
             response.getWriter().write("err1");
             return;
         }
-        User user = userService.findById(userId);
-        if (user.getType()==2){
+        User user = this.userService.findById(userId);
+        if (user.getType().intValue() == 2) {
             response.getWriter().write("err3");
             return;
         }
@@ -53,24 +52,48 @@ public class WeiboController {
         blog.setUserId(userId);
         blog.setBlogType(0);
         blog.setPublishTime(new Date());
-        int row = blogService.addBlog(blog);
+        int row = this.blogService.addBlog(blog);
         System.out.println(row);
-        if(session.getAttribute("picture")!=null){
-            List<String> src = (List<String>)session.getAttribute("picture");
+        if (session.getAttribute("picture") != null) {
+            List<String> src = (List)session.getAttribute("picture");
             Picture picture = new Picture();
-            for(String str:src){
+            for (String str : src) {
                 picture.setSrc(str);
                 picture.setUserId(userId);
                 picture.setBlogId(id);
-                pictureService.addPicture(picture);
+                this.pictureService.addPicture(picture);
             }
             UploadController.remove();
             session.removeAttribute("picture");
         }
-        if(row>0){
+        if (row > 0) {
             response.getWriter().write("ok");
-        }else{
+        } else {
             response.getWriter().write("err2");
+        }
+    }
+
+    @PostMapping({"updateWeibo"})
+    public void updateWeiBo(String title, String text, Integer typeId, Integer blogId, HttpServletResponse response) throws IOException {
+        if (title == null || title.equals("") || typeId == null || blogId == null) {
+
+            response.getWriter().write("err1");
+            return;
+        }
+        if (text == "undefined" || text.equals("undefined")) {
+            response.getWriter().write("err2");
+            return;
+        }
+        Blog blog = new Blog();
+        blog.setId(blogId);
+        blog.setTitle(title);
+        blog.setText(text);
+        blog.setTypeId(typeId);
+        int row = this.blogService.update(blog);
+        if (row > 0) {
+            response.getWriter().write("ok");
+        } else {
+            response.getWriter().write("err5");
         }
     }
 }

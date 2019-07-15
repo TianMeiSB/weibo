@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper
-  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
-  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-  
+		PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+		"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
 <mapper namespace="cn.bzerhia.weibo.mapper.BlogMapper">
 	<resultMap id="weiboResultMap" type="Blog">
 		<id property="id" column="bid"/>
@@ -162,6 +162,57 @@
 		</association>
 	</resultMap>
 
+	<resultMap id="findByTime" type="Blog">
+		<id property="id" column="bid"/>
+		<result property="title" column="title"/>
+		<result property="titlePage" column="title_page"/>
+		<result property="publishTime" column="publish_time"/>
+		<result property="typeId" column="type_id"/>
+		<association property="picture2" column="picture2" javaType="Picture">
+			<id property="id" column="pid"/>
+			<result property="src" column="src"/>
+		</association>
+	</resultMap>
+
+	<resultMap id="findByType" type="Blog">
+		<id property="id" column="bid"/>
+		<result property="title" column="title"/>
+		<result property="titlePage" column="title_page"/>
+		<result property="text" column="text"/>
+		<result property="publishTime" column="publish_time"/>
+		<result property="blogType" column="blog_type"/>
+		<collection property="user" column="user_id" javaType="User">
+			<id property="id" column="uid"/>
+			<result property="username" column="username"/>
+			<result property="image" column="image"/>
+		</collection>
+		<collection property="picture" column="picture" javaType="Picture">
+			<id property="id" column="pid"/>
+			<result property="src" column="src"/>
+		</collection>
+	</resultMap>
+	<resultMap id="findById2" type="Blog">
+		<id property="id" column="id"/>
+		<result property="title" column="title"/>
+		<result property="text" column="text"/>
+		<result property="typeId" column="type_id"/>
+		<result property="blogType" column="blog_type"/>
+		<result property="userId" column="user_id"/>
+	</resultMap>
+
+	<resultMap id="findAll3" type="Blog">
+		<id property="id" column="bid"/>
+		<result property="title" column="title"/>
+		<result property="text" column="text"/>
+		<result property="typeId" column="type_id"/>
+		<result property="blogType" column="blog_type"/>
+		<result property="publishTime" column="publish_time"/>
+		<association property="type" column="type" javaType="Type">
+			<id property="id" column="tid"/>
+			<result property="classification" column="classification"/>
+		</association>
+	</resultMap>
+
 	<insert id="addBlog" parameterType="Blog" useGeneratedKeys="true" keyProperty="id">
 		INSERT INTO t_blog(id,title,title_page,text,user_id,publish_time,type_id,blog_type)
 		VALUES (#{id},#{title},#{titlePage},#{text},#{userId},#{publishTime},#{typeId},#{blogType})
@@ -199,6 +250,7 @@
 		 FROM t_blog b
 		LEFT JOIN t_picture p on p.blog_id=b.id;
 	</select>
+
 	<select id="findByUserId" resultMap="blogByIdResultMap2">
 		select b.id bid,b.title,b.title_page,b.blog_type,b.publish_time,b.text,b.user_id,b.type_id,
 			 u.id uid,u.username,u.image,
@@ -209,7 +261,22 @@
 		LEFT JOIN t_picture p on p.blog_id=b.id
 		LEFT JOIN t_comment c on c.blog_id=b.id
 		WHERE b.user_id=#{userId}
+		ORDER BY b.publish_time ASC
 	</select>
+
+	<select id="findByUserId2" resultMap="blogByIdResultMap2">
+		select b.id bid,b.title,b.title_page,b.blog_type,b.publish_time,b.text,b.user_id,b.type_id,
+			 u.id uid,u.username,u.image,
+			 p.id pid,p.src,
+			 c.id cid,c.text ctext,c.user_id,c.reply_time,c.picture
+		from t_blog b
+		LEFT JOIN t_user u on b.user_id=u.id
+		LEFT JOIN t_picture p on p.blog_id=b.id
+		LEFT JOIN t_comment c on c.blog_id=b.id
+		WHERE b.user_id=#{userId}
+		ORDER BY b.publish_time desc
+	</select>
+
 
 	<select id="findById" resultMap="blogByIdResultMap">
 		select b.id bid,b.title,b.title_page,b.blog_type,b.publish_time,b.text,b.user_id,b.type_id,
@@ -237,5 +304,70 @@
 		LEFT JOIN t_user u on b.user_id=u.id
 		LEFT JOIN t_picture p on p.blog_id=b.id
 		ORDER BY RAND() LIMIT 20
+	</select>
+
+	<select id="findByTime" resultMap="findByTime">
+		select b.id bid,b.publish_time,b.title,b.title_page,b.type_id,
+			   p.id pid,p.src
+		FROM t_blog b
+		LEFT JOIN t_picture p on p.blog_id=b.id
+		GROUP BY publish_time desc,b.id desc
+	</select>
+
+	<select id="findByType" resultMap="findByType">
+		select b.id bid,b.title,b.title_page,b.blog_type,b.publish_time,b.text,b.user_id,b.type_id,
+			 u.id uid,u.username,u.image,
+			 p.id pid,p.src
+		from t_blog b
+		LEFT JOIN t_user u on b.user_id=u.id
+		LEFT JOIN t_picture p on p.blog_id=b.id
+		WHERE b.type_id=#{type}
+	</select>
+
+	<select id="findByType2" resultMap="findByType">
+		select b.id bid,b.title,b.title_page,b.blog_type,b.publish_time,b.text,b.user_id,b.type_id,
+			 u.id uid,u.username,u.image,
+			 p.id pid,p.src
+		from t_blog b
+		LEFT JOIN t_user u on b.user_id=u.id
+		LEFT JOIN t_picture p on p.blog_id=b.id
+		WHERE b.type_id=1
+	</select>
+
+	<delete id="delete" parameterType="Blog">
+		delete from t_blog where id=#{blogId}
+	</delete>
+
+	<update id="update" parameterType="Blog">
+		UPDATE t_blog
+		<set>
+			<if test="title!=null">title=#{title},</if>
+			<if test="text!=null">text=#{text},</if>
+			<if test="typeId!=null">type_id=#{typeId},</if>
+		</set>
+		where id=#{id}
+	</update>
+
+	<update id="updateTitlePage" parameterType="Blog">
+		update t_blog set title_page=#{titlePage} where id=#{blogId}
+	</update>
+
+	<select id="findById2" resultMap="findById2">
+		select * from t_blog where id=#{id}
+	</select>
+
+	<select id="findAll3" resultMap="findAll3">
+		select b.id bid,b.title,b.text,b.publish_time,b.type_id,b.blog_type,
+			   t.id tid,t.classification
+		from t_blog b
+		LEFT JOIN t_type t on b.type_id=t.id;
+	</select>
+
+	<update id="updateBlogType" parameterType="Blog">
+		update t_blog set type_id=#{typeId} where id=#{blogId}
+	</update>
+
+	<select id="findByLike" resultMap="blogByIdResultMap2">
+		select * from t_blog where title LIKE #{like} and user_id=#{userId}
 	</select>
 </mapper>

@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper
-  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
-  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-  
+		PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+		"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
 <mapper namespace="cn.bzerhia.weibo.mapper.TypeMapper">
 	<select id="findAll" resultType="Type">
-		SELECT * FROM t_type WHERE id>2
+		SELECT * FROM t_type
 	</select>
 	<select id="findAll2" resultType="Type">
 		SELECT * FROM t_type

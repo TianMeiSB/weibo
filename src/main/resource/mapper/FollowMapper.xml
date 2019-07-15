@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+		PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+		"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="cn.bzerhia.weibo.mapper.FollowMapper">
+	<resultMap id="findAllByUserId" type="Follow">
+		<id property="id" column="fid"/>
+		<result property="userId" column="user_id"/>
+		<result property="followUserId" column="follow_user_id"/>
+		<result property="createTime" column="create_time"/>
+		<collection property="user" column="user" javaType="User">
+			<id property="id" column="uid"/>
+			<result property="username" column="username"/>
+			<result property="image" column="image"/>
+			<result property="introduce" column="introduce"/>
+		</collection>
+	</resultMap>
+
+	<resultMap id="findAllByFollowUserId" type="Follow">
+		<id property="id" column="fid"/>
+		<result property="userId" column="user_id"/>
+		<result property="followUserId" column="follow_user_id"/>
+		<result property="createTime" column="create_time"/>
+		<collection property="followUser" column="followUser" javaType="User">
+			<id property="id" column="uid"/>
+			<result property="username" column="username"/>
+			<result property="image" column="image"/>
+			<result property="introduce" column="introduce"/>
+		</collection>
+	</resultMap>
+	<resultMap id="FollowResultMap" type="Follow">
+		<id property="id" column="fid"/>
+		<result property="userId" column="user_id"/>
+		<result property="followUserId" column="follow_user_id"/>
+		<result property="createTime" column="create_time"/>
+	</resultMap>
+	<insert id="addFollow" parameterType="Follow" useGeneratedKeys="true" keyProperty="id">
+		insert into t_follow(user_id,follow_user_id,create_time) values (#{userId},#{followUserId},#{createTime})
+	</insert>
+
+	<delete id="delete" parameterType="Follow">
+		delete from t_follow where user_id=#{userId} and follow_user_id=#{followUserId}
+	</delete>
+
+	<select id="findByUserIdAndFollowUserId" resultMap="FollowResultMap">
+		SELECT f.id fid,f.follow_user_id,f.user_id,f.create_time FROM t_follow f where user_id=#{userId} and follow_user_id=#{followUserId}
+	</select>
+
+	<select id="findAllByUserId" resultMap="findAllByUserId">
+		SELECT
+		f.id fid,f.follow_user_id,f.user_id,f.create_time,
+		u.id uid,u.username,u.image,u.introduce
+		FROM t_follow f
+		LEFT JOIN t_user u on f.follow_user_id=u.id
+		WHERE f.user_id=#{userId}
+	</select>
+
+	<select id="findAllByFollowUserId" resultMap="findAllByFollowUserId">
+		SELECT
+		f.id fid,f.follow_user_id,f.user_id,f.create_time,
+		u.id uid,u.username,u.image,u.introduce
+		FROM t_follow f
+		LEFT JOIN t_user u on f.user_id=u.id
+		WHERE f.follow_user_id=#{followUserId}
+	</select>
+</mapper>

@@ -13,51 +13,43 @@
 	http://www.springframework.org/schema/tx
 	http://www.springframework.org/schema/tx/spring-tx.xsd">
 
-	<!-- 启用注解方式配置 -->
 	<context:annotation-config />
-	<!-- 指定扫描bean的包 -->
 	<context:component-scan base-package="cn.bzerhia.weibo">
 		<context:exclude-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
 	</context:component-scan>
 
-	<!-- 引入属性文件 -->
 	<bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
 		<property name="locations">
 			<list>
 				<value>classpath:database.properties</value>
+				<value>classpath:email.properties</value>
 			</list>
 		</property>
 	</bean>
 
-	<!-- 配置数据源（druid的连接池）-->
 	<bean id="dataSource" class="com.alibaba.druid.pool.DruidDataSource">
 		<property name="driverClassName" value="${driver}"/>
 		<property name="url" value="${url}" />
 		<property name="username" value="${user}" />
 		<property name="password" value="${password}" />
-		<property name="maxActive" value="${maxActive}" /><!-- 最大连接数 -->
-		<property name="initialSize" value="${initialSize}"/><!-- 初始化连接数 -->
+		<property name="maxActive" value="${maxActive}" /><!-- ��?������������ -->
+		<property name="initialSize" value="${initialSize}"/><!-- ������������������ -->
 	</bean>
-	<!-- mybatis plus的全局配置 -->
 	<bean id="globalConfiguration" class="com.baomidou.mybatisplus.entity.GlobalConfiguration">
-		<!-- 下划线转换为驼峰式 -->
 		<property name="dbColumnUnderline" value="true"/>
 	</bean>
-    <!--配置MyBatis的sqlSessionFactory-->
-	<!--<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">-->
 	<bean id="sqlSessionFactory" class="com.baomidou.mybatisplus.spring.MybatisSqlSessionFactoryBean">
-        <property name="dataSource" ref="dataSource"/><!--数据源-->
-        <property name="mapperLocations" value="classpath:mapper/*.xml"/><!-- 配置Mapper.xml的目录 -->
-        <property name="typeAliasesPackage" value="cn.bzerhia.weibo.entity"/><!-- 配置实体类包做为别名 -->
+		<property name="dataSource" ref="dataSource"/><!--��������?-->
+		<property name="mapperLocations" value="classpath:mapper/*.xml"/><!-- ������Mapper.xml��������? -->
+		<property name="typeAliasesPackage" value="cn.bzerhia.weibo.entity"/><!-- ������������������������������ -->
 		<property name="globalConfig" ref="globalConfiguration"/>
 		<!--<property name="configLocation" value="config/mybatis.xml"></property>-->
-		<!-- <property name="configLocation" value="classpath:mybatis-config.xml"/>--><!--引入mybatis的配置文件 -->
+		<!-- <property name="configLocation" value="classpath:mybatis-config.xml"/>--><!--������mybatis��������������? -->
 		<property name="plugins">
 
 			<array>
 				<bean class="com.github.pagehelper.PageInterceptor">
 					<property name="properties">
-						<!--使用下面的方式配置参数，一行配置一个 -->
 						<value>
 							helperDialect=mysql
 							offsetAsPageNum=true
@@ -77,11 +69,10 @@
 	</bean>
 
 	<bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
-		<property name="basePackage" value="cn.bzerhia.weibo.mapper" /><!--配置dao的包-->
+		<property name="basePackage" value="cn.bzerhia.weibo.mapper" /><!--������dao������-->
 		<property name="sqlSessionFactoryBeanName" value="sqlSessionFactory"/>
 	</bean>
 
-	<!-- Druid -->
 	<bean id="druid-stat-interceptor" class="com.alibaba.druid.support.spring.stat.DruidStatInterceptor"/>
 	<bean id="druid-stat-pointcut" class="org.springframework.aop.support.JdkRegexpMethodPointcut" scope="prototype">
 		<property name="patterns">
@@ -91,7 +82,6 @@
 			</list>
 		</property>
 	</bean>
-	<!-- 切入点配置 -->
 	<aop:config proxy-target-class="true">
 		<aop:advisor advice-ref="druid-stat-interceptor" pointcut-ref="druid-stat-pointcut" />
 	</aop:config>
@@ -101,4 +91,5 @@
 	</bean>
 
 	<tx:annotation-driven transaction-manager="txManager" proxy-target-class="true"/>
+	<import resource="applicationContext-email.xml"/>
 </beans>

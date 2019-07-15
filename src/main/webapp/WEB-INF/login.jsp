@@ -4,7 +4,7 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>用户登录</title>
     <link href="${ctx}/static/bootstrap-3.3.7-dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="${ctx}/static/font-awesome-4.7.0/css/font-awesome.min.css" rel="stylesheet">
     <link rel="stylesheet" href="${ctx}/static/layui/css/layui.css">
@@ -27,12 +27,12 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-            <a class="navbar-brand" href="#">帅鹏博客</a>
+            <a class="navbar-brand" href="/index">帅鹏博客</a>
         </div>
         <!-- Collect the nav links, forms, and other content for toggling -->
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
             <ul class="nav navbar-nav">
-                <li class="active"><a href="#">首页 <span class="sr-only">(current)</span></a></li>
+                <li class="active"><a href="/index">首页 <span class="sr-only">(current)</span></a></li>
                 <c:if test="${not empty user}">
                     <li class="dropdown">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">发表内容<span class="caret"></span></a>
@@ -61,13 +61,20 @@
                            aria-expanded="false" style="padding-bottom: 0px;padding-left: 0px;padding-top: 10px;">
                             <img src="${user.image}" alt="头像" class="img-circle"  style="width: 30px;height: 30px;">
                                 ${user.username}<span class="caret"></span>
+                            <c:if test="${comments.size()!=0||comments2.size()!=0}">
+                                <span class="layui-badge-dot"></span>
+                            </c:if>
                         </a>
                         <ul class="dropdown-menu">
                             <c:if test="${user.type==1}">
                                 <li><a href="backstage">后台管理</a></li>
                             </c:if>
-                            <li><a href="user/myIndex">我的主页</a></li>
-                            <li><a href="#">我的消息</a></li>
+                            <li><a href="/user/myIndex">我的主页</a></li>
+                            <li><a href="/user/seeComment">
+                                我的消息
+                                <c:if test="${comments.size()!=0||comments2.size()!=0}">
+                                    <span class="layui-badge">${comments.size()+comments2.size()}
+                                    </span></c:if></a></li>
                             <li role="separator" class="divider"></li>
                             <li><a href="logout">退出登录</a></li>
                         </ul>
@@ -106,7 +113,9 @@
 <script src="${ctx}/static/layui/layui.js"></script>
 <script src="${ctx}/static/bootstrap-3.3.7-dist/js/bootstrap.min.js"></script>
 <script>
-
+    layui.use('layer',function () {
+        var layer = layui.layer;
+    });
     //给登录按钮绑定点击事件
     $("#login").click(function(){
         //利用ajax进行登录请求

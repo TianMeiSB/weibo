@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+		PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+		"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="cn.bzerhia.weibo.mapper.LikeMapper">
+	<resultMap id="CollectResultMap" type="Like">
+		<id property="id" column="lid"/>
+		<result property="userId" column="user_id"/>
+		<result property="blogId" column="blog_id"/>
+		<result property="createTime" column="create_time"/>
+	</resultMap>
+	<insert id="addLike" parameterType="Like" useGeneratedKeys="true" keyProperty="id">
+		insert into t_like(user_id,blog_id,create_time) values (#{userId},#{blogId},#{createTime})
+	</insert>
+
+	<delete id="delete" parameterType="Like">
+		delete from t_like where user_id=#{userId} and blog_id=#{blogId}
+	</delete>
+
+	<select id="findByUserIdAndBlogId" resultMap="CollectResultMap">
+		SELECT l.id lid,l.blog_id,l.user_id,l.create_time FROM t_like l where user_id=#{userId} and blog_id=#{blogId}
+	</select>
+
+	<select id="findAllByBlogId" resultMap="CollectResultMap">
+		SELECT l.id lid,l.blog_id,l.user_id,l.create_time FROM t_like l WHERE l.blog_id=#{blogId}
+	</select>
+	<delete id="deleteByBlogId" parameterType="Like">
+		delete from t_like where blog_id=#{blogId}
+	</delete>
+</mapper>

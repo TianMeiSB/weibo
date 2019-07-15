@@ -24,6 +24,7 @@ public class Blog {
     private Integer userId;//用户ID
     private Integer typeId;//类型ID
 //    private Picture picture;//图片
+    private Picture picture2;
     private List<Picture> picture = new ArrayList<Picture>();//图片
     private Integer blogType;//
 

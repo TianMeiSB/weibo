@@ -11,35 +11,34 @@ import org.springframework.web.bind.annotation.GetMapping;
 import javax.servlet.http.HttpSession;
 import java.util.List;
 
+
+
 @Controller
-public class TypeController {
-    private TypeService typeService;
+public class TypeController
+{
+    private TypeService typeService = new TypeServiceImpl();
 
-    public TypeController() {
-        typeService = new TypeServiceImpl();
+
+    @GetMapping({"addblog"})
+    public String addBlog(HttpSession session, Model model) {
+        User user = (User)session.getAttribute("user");
+        if (user == null) {
+            return "redirect:findByType?typeId=1";
+        }
+        List<Type> typeList = this.typeService.findAll();
+        model.addAttribute("typeList", typeList);
+        return "user/addBlog";
     }
 
-    @GetMapping("addblog")
-    public String addBlog(HttpSession session, Model model){
-        User user = (User)session.getAttribute("user");
-        if(user==null){
-            return "redirect:index";
-        }else{
-            List<Type> typeList = typeService.findAll();
-            model.addAttribute("typeList",typeList);
-            return "user/addBlog";
-        }
-    }
 
-    @GetMapping("addweibo")
-    public String addweibo(HttpSession session, Model model){
+    @GetMapping({"addweibo"})
+    public String addweibo(HttpSession session, Model model) {
         User user = (User)session.getAttribute("user");
-        if(user==null){
-            return "redirect:index";
-        }else{
-            List<Type> typeList = typeService.findAll();
-            model.addAttribute("typeList",typeList);
-            return "user/addWeibo";
+        if (user == null) {
+            return "redirect:findByType?typeId=1";
         }
+        List<Type> typeList = this.typeService.findAll();
+        model.addAttribute("typeList", typeList);
+        return "user/addWeibo";
     }
 }

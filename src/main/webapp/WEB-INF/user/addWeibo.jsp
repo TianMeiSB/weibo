@@ -20,12 +20,12 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-            <a class="navbar-brand" href="#">帅鹏博客</a>
+            <a class="navbar-brand" href="/index">帅鹏博客</a>
         </div>
         <!-- Collect the nav links, forms, and other content for toggling -->
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
             <ul class="nav navbar-nav">
-                <li class="active"><a href="#">首页 <span class="sr-only">(current)</span></a></li>
+                <li class="active"><a href="/index">首页 <span class="sr-only">(current)</span></a></li>
                 <c:if test="${not empty user}">
                     <li class="dropdown">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">发表内容<span class="caret"></span></a>
@@ -54,13 +54,20 @@
                            aria-expanded="false" style="padding-bottom: 0px;padding-left: 0px;padding-top: 10px;">
                             <img src="${user.image}" alt="头像" class="img-circle"  style="width: 30px;height: 30px;">
                                 ${user.username}<span class="caret"></span>
+                            <c:if test="${comments.size()!=0||comments2.size()!=0}">
+                                <span class="layui-badge-dot"></span>
+                            </c:if>
                         </a>
                         <ul class="dropdown-menu">
                             <c:if test="${user.type==1}">
                                 <li><a href="/backstage">后台管理</a></li>
                             </c:if>
                             <li><a href="/user/myIndex">我的主页</a></li>
-                            <li><a href="#">我的消息</a></li>
+                            <li><a href="/user/seeComment">
+                                我的消息
+                                <c:if test="${comments.size()!=0||comments2.size()!=0}">
+                                    <span class="layui-badge">${comments.size()+comments2.size()}
+                                    </span></c:if></a></li>
                             <li role="separator" class="divider"></li>
                             <li><a href="/logout">退出登录</a></li>
                         </ul>
@@ -71,13 +78,13 @@
     </div><!-- /.container-fluid -->
 </nav>
 
-<div style="width: 60%;height:90%;background-color: #F8F8F8;margin: auto;margin-top: 4%;">
+<div style="width: 810px;height:520px;background-color: #F8F8F8;margin: auto;margin-top: 60px;">
     <form class="layui-form layui-form-pane" action="#" method="post">
         <input type="hidden" value="${user.id}" name="userId" id="userId"/>
         <div class="layui-form-item">
             <label class="layui-form-label">标题</label>
             <div class="layui-input-block">
-                <input type="text" name="title" required="" lay-verify="required" placeholder="请输入标题" autocomplete="off" class="layui-input layui-form-danger" id="title" maxlength="30">
+                <input type="text" name="title" required="" lay-verify="required" placeholder="请输入标题" autocomplete="off" class="layui-input layui-form-danger" id="title" maxlength="30" style="width: 300px;">
             </div>
         </div>
 
@@ -85,7 +92,7 @@
             <label class="layui-form-label">类型</label>
             <div class="layui-input-block">
                 <c:forEach items="${typeList}" var="list">
-                    <input type="radio" name="type" value="${list.id}" title="${list.classification}" <c:if test="${list.id==3}">checked=""</c:if> class="type">
+                    <input type="radio" name="type" value="${list.id}" title="${list.classification}" <c:if test="${list.id==3}">checked=""</c:if> <c:if test="${list.id==1||list.id==2}">disabled=""</c:if> class="type">
                 </c:forEach>
             </div>
         </div>
@@ -156,7 +163,7 @@
         xmlhttp.open("POST","${ctx}/addWeibo",true);
         //3、发送请求
         xmlhttp.setRequestHeader("Content-type","application/x-www-form-urlencoded");
-        xmlhttp.send("title="+$("#title").val()+"&text="+$("#text").val()+"&type="+$(".type").val()+"&userId="+$("#userId").val());
+        xmlhttp.send("title="+$("#title").val()+"&text="+$("#text").val()+"&type="+$("input[type='radio']:checked").val()+"&userId="+$("#userId").val());
         //4、处理响应
         xmlhttp.onreadystatechange=function(){
             if (xmlhttp.readyState==4 && xmlhttp.status==200){

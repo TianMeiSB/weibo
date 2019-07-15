@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper
-  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
-  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-  
+		PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+		"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
 <mapper namespace="cn.bzerhia.weibo.mapper.UserMapper">
 
 	<resultMap id="userResultMap" type="User">
@@ -19,14 +19,14 @@
 		<result property="image" column="image"/>
 		<result property="introduce" column="introduce"/>
 	</resultMap>
-	
+
 	<select id="findByUsername" resultMap="userResultMap">
 		SELECT * FROM t_user WHERE username=#{username}
 	</select>
 
 	<insert id="addUser"  parameterType="User" useGeneratedKeys="true" keyProperty="id">
-		INSERT INTO t_user(username,password,sex,phone,address,type,register_time,salt,image,introduce)
-		VALUES (#{username},#{password},#{sex},#{phone},#{address},#{type},#{registerTime},#{salt},#{image},#{introduce})
+		INSERT INTO t_user(username,password,sex,phone,address,type,register_time,salt,image,introduce,email)
+		VALUES (#{username},#{password},#{sex},#{phone},#{address},#{type},#{registerTime},#{salt},#{image},#{introduce},#{email})
 	</insert>
 
 	<update id="updatePasswd" parameterType="User">
@@ -36,18 +36,18 @@
 		update t_user set image=#{src} where id=#{userId}
 	</update>
 
-    <update id="updateUser" parameterType="User">
-        update t_user
-        <set>
-            <if test="address!=null">address=#{address},</if>
-            <if test="phone!=null">phone=#{phone},</if>
-            <if test="sex!=null">sex=#{sex},</if>
-            <if test="introduce!=null">introduce=#{introduce},</if>
-        </set>
-        where id=#{id}
-    </update>
+	<update id="updateUser" parameterType="User">
+		update t_user
+		<set>
+			<if test="address!=null">address=#{address},</if>
+			<if test="phone!=null">phone=#{phone},</if>
+			<if test="sex!=null">sex=#{sex},</if>
+			<if test="introduce!=null">introduce=#{introduce},</if>
+		</set>
+		where id=#{id}
+	</update>
 
-    <select id="findById" resultMap="userResultMap">
+	<select id="findById" resultMap="userResultMap">
         select * from t_user where id=#{userId}
     </select>
 

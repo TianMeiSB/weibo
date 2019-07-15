@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+		PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+		"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="cn.bzerhia.weibo.mapper.CollectMapper">
+	<resultMap id="findAllByUserId" type="Collect">
+		<id property="id" column="cid"/>
+		<result property="userId" column="user_id"/>
+		<result property="blogId" column="blog_id"/>
+		<result property="collTime" column="coll_time"/>
+		<association property="user" column="user" javaType="User">
+			<id property="id" column="uid"/>
+			<result property="username" column="uname"/>
+			<result property="image" column="uimage"/>
+		</association>
+		<association property="blog" column="blog" javaType="Blog">
+			<id property="id" column="bid"/>
+			<result property="title" column="title"/>
+			<result property="titlePage" column="title_page"/>
+			<result property="publishTime" column="publish_time"/>
+			<collection property="picture" column="picture" javaType="Picture">
+				<id property="id" column="pid"/>
+				<result property="src" column="src"/>
+			</collection>
+			<collection property="user" column="user" javaType="User">
+				<id property="id" column="uuid"/>
+				<result property="username" column="uuname"/>
+				<result property="image" column="uuimage"/>
+			</collection>
+		</association>
+	</resultMap>
+
+	<resultMap id="CollectResultMap" type="Collect">
+		<id property="id" column="cid"/>
+		<result property="userId" column="user_id"/>
+		<result property="blogId" column="blog_id"/>
+		<result property="collTime" column="coll_time"/>
+	</resultMap>
+	<insert id="addCollection" parameterType="Collect" useGeneratedKeys="true" keyProperty="id">
+		insert into t_collect(user_id,blog_id,coll_time) values (#{userId},#{blogId},#{collTime})
+	</insert>
+
+	<delete id="delete" parameterType="Collect">
+		delete from t_collect where user_id=#{userId} and blog_id=#{blogId}
+	</delete>
+
+	<select id="findByUserIdAndBlogId" resultMap="CollectResultMap">
+		SELECT c.id cid,c.blog_id,c.user_id,c.coll_time FROM t_collect c where user_id=#{userId} and blog_id=#{blogId}
+	</select>
+
+	<select id="findAllByUserId" resultMap="findAllByUserId">
+		SELECT c.id cid,c.blog_id,c.user_id,c.coll_time,
+			 b.id bid,b.title,b.title_page,b.publish_time,
+			 u.id uid,u.username uname,u.image uimage,
+			 p.id pid,p.src,
+			 uu.id uuid,uu.username uuname,uu.image uuimage
+		FROM t_collect c
+		LEFT JOIN t_user u on c.user_id=u.id
+		LEFT JOIN t_blog b on c.blog_id=b.id
+		LEFT JOIN t_picture p on p.blog_id=b.id
+		LEFT JOIN t_user uu on uu.id=b.user_id
+		WHERE c.user_id=#{userId}
+	</select>
+
+	<delete id="deleteByBlogId" parameterType="Collect">
+		delete from t_collect where blog_id=#{blogId}
+	</delete>
+</mapper>

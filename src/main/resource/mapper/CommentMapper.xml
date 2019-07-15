@@ -1,9 +1,56 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper
-  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
-  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-  
+		PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+		"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
 <mapper namespace="cn.bzerhia.weibo.mapper.CommentMapper">
+	<resultMap id="findById" type="Comment">
+		<id property="id" column="cid"/>
+		<result property="text" column="text"/>
+		<result property="replyTime" column="reply_time"/>
+		<result property="type" column="type"/>
+		<association property="user1" column="user" javaType="User">
+			<id property="id" column="uid"/>
+			<result property="username" column="username"/>
+			<result property="image" column="image"/>
+		</association>
+		<association property="blog" column="blog" javaType="Blog">
+			<id property="id" column="bid"/>
+		</association>
+	</resultMap>
+
+	<resultMap id="findById2" type="Comment">
+		<id property="id" column="cid"/>
+		<result property="text" column="text"/>
+		<result property="replyTime" column="create_time"/>
+		<result property="type" column="type"/>
+		<association property="user1" column="user" javaType="User">
+			<id property="id" column="uid"/>
+			<result property="username" column="username"/>
+			<result property="image" column="image"/>
+		</association>
+		<association property="blog" column="blog" javaType="Blog">
+			<id property="id" column="bid"/>
+		</association>
+	</resultMap>
+
+	<resultMap id="findAllByMasterId" type="Comment">
+		<id property="id" column="id"/>
+		<result property="text" column="text"/>
+	</resultMap>
+
+	<resultMap id="findAll3" type="Comment">
+		<id property="id" column="cid"/>
+		<result property="text" column="text"/>
+		<association property="user1" column="user1" javaType="User">
+			<id property="id" column="uid"/>
+			<result property="username" column="username"/>
+		</association>
+		<association property="blog" column="blog" javaType="Blog">
+			<id property="id" column="bid"/>
+			<result property="title" column="title"/>
+		</association>
+	</resultMap>
 	<insert id="addComment" parameterType="Comment" useGeneratedKeys="true" keyProperty="id">
 		insert into t_comment(user_id,blog_id,text,reply_time,master_id,type)
 		values (#{userId},#{blogId},#{text},#{replyTime},#{masterId},#{type})
@@ -12,4 +59,71 @@
 		insert into t_comment2(id,user_id,comment_id,text,create_time,master_id,type,blog_id,comm_id)
 		values (#{id},#{userId},#{commentId},#{text},#{replyTime},#{masterId},#{type},#{blogId},#{commId})
 	</insert>
+
+	<select id="findById" resultMap="findById">
+		select c.id cid,c.text,c.reply_time,c.type,
+			 u.id uid,u.username,u.image,
+			 b.id bid
+		 from t_comment c
+		LEFT JOIN t_user u on c.user_id=u.id
+		LEFT JOIN t_blog b on c.blog_id=b.id
+		WHERE c.master_id=#{masterId}
+	</select>
+	<select id="findById2" resultMap="findById2">
+		select c.id cid,c.text,c.create_time,c.type,
+			 u.id uid,u.username,u.image,
+			 b.id bid
+		 from t_comment2 c
+		LEFT JOIN t_user u on c.user_id=u.id
+		LEFT JOIN t_blog b on c.blog_id=b.id
+		WHERE c.master_id=#{masterId}
+	</select>
+
+	<select id="findAllByMasterId" resultMap="findAllByMasterId">
+		  select c.id,c.text from t_comment c where master_id=#{masterId} and type=1
+	</select>
+
+	<select id="findAllByMasterId2" resultMap="findAllByMasterId">
+		  select c.id,c.text from t_comment2 c where master_id=#{masterId} and type=1
+	</select>
+
+	<update id="updateComment" parameterType="Comment">
+		update t_comment set type=0 where master_id=#{masterId}
+	</update>
+	<update id="updateComment2" parameterType="Comment">
+		update t_comment2 set type=0 where master_id=#{masterId}
+	</update>
+	<delete id="delete" parameterType="Comment">
+		delete from t_comment where id=#{commentId}
+	</delete>
+	<delete id="delete2" parameterType="Comment">
+		delete from t_comment2 where id=#{commentId}
+	</delete>
+	<delete id="deleteByBlogId" parameterType="Comment">
+		delete from t_comment where blog_id=#{blogId}
+	</delete>
+	<delete id="deleteByBlogId2" parameterType="Comment">
+		delete from t_comment2 where blog_id=#{blogId}
+	</delete>
+	<delete id="deleteCommentId" parameterType="Comment">
+		delete from t_comment2 where comment_id=#{commentId}
+	</delete>
+
+	<select id="findAll2" resultMap="findAll3">
+		select c.id cid,c.text,
+			 u.id uid,u.username,
+			 b.id bid,b.title
+		 from t_comment c
+		LEFT JOIN t_user u on c.user_id=u.id
+		LEFT JOIN t_blog b on c.blog_id=b.id;
+	</select>
+
+	<select id="findAll3" resultMap="findAll3">
+		select c.id cid,c.text,
+			 u.id uid,u.username,
+			 b.id bid,b.title
+		 from t_comment2 c
+		LEFT JOIN t_user u on c.user_id=u.id
+		LEFT JOIN t_blog b on c.blog_id=b.id;
+	</select>
 </mapper>

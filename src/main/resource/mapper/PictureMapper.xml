@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper
-  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
-  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-  
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
 <mapper namespace="cn.bzerhia.weibo.mapper.PictureMapper">
     <resultMap id="pictureResultMap" type="Picture">
         <id property="id" column="id"/>
@@ -12,13 +12,41 @@
     </resultMap>
 
     <resultMap id="pictureResultMap2" type="Picture">
-        <id property="id" column="id"/>
+        <id property="id" column="pid"/>
         <result property="src" column="src"/>
         <result property="userId" column="user_id"/>
         <result property="blogId" column="blog_id"/>
         <association property="blog" column="blog" javaType="Blog">
             <id property="id" column="bid"/>
             <result property="title" column="title"/>
+        </association>
+    </resultMap>
+
+    <resultMap id="pictureResultMap3" type="Blog">
+        <id property="id" column="bid"/>
+        <result property="title" column="title"/>
+        <association property="user" column="user" javaType="User">
+            <id property="id" column="uid"/>
+            <result property="username" column="username"/>
+        </association>
+        <collection property="picture" column="picture" javaType="Picture">
+            <id property="id" column="pid"/>
+            <result property="src" column="src"/>
+        </collection>
+    </resultMap>
+
+    <resultMap id="photoResultMap" type="Blog">
+        <id property="id" column="bid"/>
+        <result property="title" column="title"/>
+        <association property="picture" column="picture" javaType="Picture">
+            <id property="id" column="pid"/>
+            <result property="src" column="src"/>
+            <result property="userId" column="user_id"/>
+            <result property="blogId" column="blog_id"/>
+        </association>
+        <association property="user" column="user" javaType="User">
+            <id property="id" column="uid"/>
+            <result property="username" column="username"/>
         </association>
     </resultMap>
     <select id="findAll" resultMap="pictureResultMap">
@@ -41,9 +69,25 @@
         UPDATE t_picture SET src=#{src} WHERE id=#{id}
     </update>
     <select id="findAll2" resultMap="pictureResultMap2">
-        SELECT b.id,b.title,
+        SELECT b.id bid,b.title,
 			 p.id pid,p.src
 		FROM t_picture p
 		LEFT JOIN t_blog b on p.blog_id=b.id;
     </select>
+
+    <select id="findAll3" resultMap="photoResultMap">
+        SELECT b.id bid,b.title,
+			 p.id pid,p.src,
+			 u.id uid,u.username
+		 FROM t_blog b
+		LEFT JOIN t_picture p on p.blog_id=b.id
+		left join t_user u on b.user_id=u.id;
+    </select>
+    <delete id="deleteByBlogId" parameterType="Picture">
+		delete from t_picture where blog_id=#{blogId}
+	</delete>
+
+    <insert id="updatePicture" parameterType="Picture">
+        insert into t_picture(src,user_id,blog_id) values (#{src},#{userId},#{blogId})
+    </insert>
 </mapper>
