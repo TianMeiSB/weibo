@@ -8,6 +8,7 @@
     <link href="${ctx}/static/bootstrap-3.3.7-dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="${ctx}/static/font-awesome-4.7.0/css/font-awesome.min.css" rel="stylesheet">
     <link rel="stylesheet" href="${ctx}/static/layui/css/layui.css">
+    <link rel="SHORTCUT ICON" href="${ctx}/images/logo/favicon.ico">
 </head>
 
 <style>

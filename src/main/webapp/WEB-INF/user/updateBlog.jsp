@@ -8,6 +8,7 @@
     <link href="${ctx}/static/font-awesome-4.7.0/css/font-awesome.min.css" rel="stylesheet">
     <link rel="stylesheet" href="${ctx}/static/layui/css/layui.css">
     <meta http-equiv="Content-Type" content="multipart/form-data; charset=utf-8" />
+    <link rel="SHORTCUT ICON" href="${ctx}/images/logo/favicon.ico">
 </head>
 <body style="background: #D3E2EE;">
 <nav class="navbar navbar-default navbar-fixed-top"  style="background-color: #E7EAED;">

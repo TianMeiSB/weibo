@@ -5,6 +5,7 @@
 <head>
     <title>/(ㄒoㄒ)/~~</title>
     <link rel="stylesheet" href="${ctx}/static/layui/css/layui.css">
+    <link rel="SHORTCUT ICON" href="${ctx}/images/logo/favicon.ico">
 </head>
 <style>
     body{
