@@ -48,6 +48,7 @@
                         <dd><a href="/admin/findAllPicture">图片管理</a></dd>
                         <dd  class="layui-this"><a href="/admin/findAllComment">回复列表</a></dd>
                         <dd><a href="/admin/findAllComment2">回复列表</a></dd>
+                        <dd><a href="/admin/findAllType">类型管理</a></dd>
                     </dl>
                 </li>
 

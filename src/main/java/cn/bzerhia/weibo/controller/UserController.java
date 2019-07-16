@@ -47,6 +47,9 @@ public class UserController {
     @GetMapping({"admin"})
     public String admin(HttpSession session) {
         User user = (User) session.getAttribute("user");
+        if(user==null){
+            return "redirect:findByType?typeId=1";
+        }
         if (user.getType().intValue() != 1) {
             return "redirect:findByType?typeId=1";
         }
