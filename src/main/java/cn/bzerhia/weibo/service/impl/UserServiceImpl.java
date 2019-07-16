@@ -16,8 +16,12 @@ public class UserServiceImpl
 
     public void init() {
         this.session = MyBatisUtil.getSession();
-        this.userMapper = (UserMapper)this.session.getMapper(UserMapper.class);
-    } private UserMapper userMapper; private SqlSession session;
+        this.userMapper = (UserMapper) this.session.getMapper(UserMapper.class);
+    }
+
+    private UserMapper userMapper;
+    private SqlSession session;
+
     public void close() {
         this.session.commit();
         this.session.close();
@@ -69,7 +73,6 @@ public class UserServiceImpl
     }
 
 
-
     public List<User> findAll() {
         init();
         List<User> all = this.userMapper.findAll();
@@ -83,5 +86,13 @@ public class UserServiceImpl
         int row = this.userMapper.updateType(type, userId);
         close();
         return row;
+    }
+
+    @Override
+    public List<User> findByLike(String like) {
+        init();
+        List<User> userList = userMapper.findByLike(like);
+        close();
+        return userList;
     }
 }

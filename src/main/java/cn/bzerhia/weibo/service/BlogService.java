@@ -26,7 +26,7 @@ public interface BlogService {
 
     List<Blog> findByUserId2(Integer paramInteger);
 
-    List<Blog> findByLike(String paramString, Integer paramInteger);
+    List<Blog> findByLike(String like);
 
     List<Blog> findByTime();
 

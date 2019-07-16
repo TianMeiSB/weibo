@@ -95,21 +95,18 @@ public class UserController {
         return "user/myIndex";
     }
 
-    @GetMapping({"user/findByLike"})
-    public String findByLike(HttpSession session, Model model, String like, Integer userId) {
-        User user = (User) session.getAttribute("user");
-        if (user == null) {
+    @GetMapping({"findByLike"})
+    public String findByLike(HttpSession session, Model model, String like) {
+        if (like==null||like.equals("")) {
             return "redirect:findByType?typeId=1";
         }
-        String src = "'%" + like + "%'";
-        List<Blog> blogList = this.blogService.findByLike(src, userId);
-        List<Follow> followList = this.followService.findAllByUserId(user.getId());
-        List<Follow> followList1 = this.followService.findAllByFollowUserId(user.getId());
+        String src = "%" + like + "%";
+        List<Blog> blogList = this.blogService.findByLike(src);
+        List<User> userList = userService.findByLike(src);
         model.addAttribute("blogList", blogList);
-        model.addAttribute("guanzhu", followList);
-        model.addAttribute("fensi", followList1);
-        model.addAttribute("code", Integer.valueOf(1));
-        return "user/myIndex";
+        model.addAttribute("userList",userList);
+        model.addAttribute("like",like);
+        return "search";
     }
 
     @GetMapping({"user/myIndex2"})

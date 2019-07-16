@@ -106,9 +106,9 @@ public class BlogServiceImpl implements BlogService {
     }
 
 
-    public List<Blog> findByLike(String like, Integer userId) {
+    public List<Blog> findByLike(String like) {
         init();
-        List<Blog> blogList = this.blogMapper.findByLike(like, userId);
+        List<Blog> blogList = this.blogMapper.findByLike(like);
         close();
         return blogList;
     }

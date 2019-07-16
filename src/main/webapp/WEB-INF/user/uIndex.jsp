@@ -41,9 +41,9 @@
                         </li>
                     </c:if>
                 </ul>
-                <form class="navbar-form navbar-left">
+                <form class="navbar-form navbar-left" action="/findByLike" method="get">
                     <div class="form-group">
-                        <input type="text" class="form-control" placeholder="全站搜索">
+                        <input type="text" class="form-control" placeholder="全站搜索" name="like">
                     </div>
                     <button type="submit" class="btn btn-default">GO</button>
                 </form>

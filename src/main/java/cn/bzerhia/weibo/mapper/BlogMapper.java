@@ -19,7 +19,7 @@ public interface BlogMapper extends BaseMapper<Blog> {
     List<Blog> findByPhoto(Integer paramInteger);
     List<Blog> findByUserId(Integer paramInteger);
     List<Blog> findByUserId2(Integer paramInteger);
-    List<Blog> findByLike(@Param("like") String paramString, @Param("userId") Integer paramInteger);
+    List<Blog> findByLike(@Param("like") String like);
     List<Blog> findByTime();
     List<Blog> findByType(Integer paramInteger);
     List<Blog> findByType2();

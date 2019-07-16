@@ -41,9 +41,9 @@
                     </li>
                 </c:if>
             </ul>
-            <form class="navbar-form navbar-left">
+            <form class="navbar-form navbar-left" action="/findByLike" method="get">
                 <div class="form-group">
-                    <input type="text" class="form-control" placeholder="全站搜索">
+                    <input type="text" class="form-control" placeholder="全站搜索" name="like">
                 </div>
                 <button type="submit" class="btn btn-default">GO</button>
             </form>
@@ -116,11 +116,11 @@
                             </c:if>
                             <c:if test="${blog.titlePage==null}">
                                 <c:set value="${blog.picture}" var="picture2"/>
-                                <c:if test="${picture2!=null}">
+                                <c:if test="${picture2.size()>0}">
                                     <a href="${ctx}/seeBlog?blogId=${blog.id}"><img src="${picture[0].src}" alt="这是缩略图" style="width: 100%;height:100%;border: 1px solid #9F9F9F" id="1"></a>
                                 </c:if>
-                                <c:if test="${picture2==null}">
-                                    <a href="${ctx}/seeBlog?blogId=${blog.id}" style="text-decoration:none;"><img src="images/fengmian/1.png" alt="" style="width: 100%;height: 100%;border: 1px solid #9F9F9F" id="2"></a>
+                                <c:if test="${picture2.size()==0}">
+                                    <a href="${ctx}/seeBlog?blogId=${blog.id}" style="text-decoration:none;"><img src="${ctx}/images/fengmian/1.png" alt="" style="width: 100%;height: 100%;border: 1px solid #9F9F9F" id="2"></a>
                                 </c:if>
                             </c:if>
                             <c:if test="${picture==null}">

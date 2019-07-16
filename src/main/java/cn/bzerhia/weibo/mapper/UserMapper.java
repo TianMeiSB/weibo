@@ -17,4 +17,5 @@ public interface UserMapper extends BaseMapper<User> {
     User findById(Integer paramInteger);
     List<User> findAll();
     int updateType(@Param("type") Integer paramInteger1, @Param("userId") Integer paramInteger2);
+    List<User> findByLike(@Param("like") String like);
 }

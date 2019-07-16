@@ -213,6 +213,21 @@
 		</association>
 	</resultMap>
 
+	<resultMap id="findByLike" type="Blog">
+		<id property="id" column="bid"/>
+		<result property="title" column="title"/>
+		<result property="titlePage" column="title_page"/>
+		<result property="publishTime" column="publish_time"/>
+		<association property="user" column="user" javaType="User">
+			<id property="id" column="uid"/>
+			<result property="username" column="username"/>
+			<result property="image" column="image"/>
+		</association>
+		<collection property="picture" column="picture" javaType="Picture">
+			<id property="id" column="pid"/>
+			<result property="src" column="src"/>
+		</collection>
+	</resultMap>
 	<insert id="addBlog" parameterType="Blog" useGeneratedKeys="true" keyProperty="id">
 		INSERT INTO t_blog(id,title,title_page,text,user_id,publish_time,type_id,blog_type)
 		VALUES (#{id},#{title},#{titlePage},#{text},#{userId},#{publishTime},#{typeId},#{blogType})
@@ -367,7 +382,13 @@
 		update t_blog set type_id=#{typeId} where id=#{blogId}
 	</update>
 
-	<select id="findByLike" resultMap="blogByIdResultMap2">
-		select * from t_blog where title LIKE #{like} and user_id=#{userId}
+	<select id="findByLike" resultMap="findByLike">
+		select b.id bid,b.title,b.title_page,b.publish_time,
+		   p.id pid,p.src,
+			 u.id uid,u.image,u.username
+		 from t_blog b
+		LEFT JOIN t_picture p on p.blog_id=b.id
+		LEFT JOIN t_user u on b.user_id=u.id
+		WHERE b.title LIKE #{like}
 	</select>
 </mapper>

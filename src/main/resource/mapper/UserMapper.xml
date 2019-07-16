@@ -20,6 +20,12 @@
 		<result property="introduce" column="introduce"/>
 	</resultMap>
 
+	<resultMap id="findByLike" type="User">
+		<id property="id" column="id"/>
+		<result property="username" column="username"/>
+		<result property="image" column="image"/>
+		<result property="introduce" column="introduce"/>
+	</resultMap>
 	<select id="findByUsername" resultMap="userResultMap">
 		SELECT * FROM t_user WHERE username=#{username}
 	</select>
@@ -58,4 +64,9 @@
 	<update id="updateType" parameterType="User">
 		update t_user set type=#{type} where id=#{userId}
 	</update>
+
+	<select id="findByLike" resultMap="findByLike">
+		select id,username,image,introduce from t_user where username like #{like}
+	</select>
+
 </mapper>

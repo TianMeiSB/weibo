@@ -20,4 +20,5 @@ public interface UserService {
     List<User> findAll();
 
     int updateType(Integer paramInteger1, Integer paramInteger2);
+    List<User> findByLike(String like);
 }
